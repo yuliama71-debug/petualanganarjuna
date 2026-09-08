@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="jv" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Arjuna: Misi Nggolèki Sifat</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans & MedievalSharp for Wayang aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        jawa: {
+                            gold: '#F59E0B',
+                            goldlight: '#FDE047',
+                            brown: '#78350F',
+                            darkbrown: '#451A03',
+                            red: '#DC2626',
+                            deepred: '#991B1B',
+                            navy: '#1E1B4B',
+                            accent: '#D97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        wayang: ['Cinzel', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Batik Pattern Background */
+        .batik-bg {
+            background-color: #2a1810;
+            background-image: radial-gradient(#d97706 0.75px, transparent 0.75px), radial-gradient(#d97706 0.75px, #1a0f0a 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF099 0%, #F59E0B 50%, #D97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-border {
+            border: 2px solid #F59E0B;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Glassmorphism visual card styling */
+        .wayang-card {
+            background: rgba(30, 20, 15, 0.85);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Hologram glow effect for characters */
+        .hologram-glow {
+            filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.6));
+            transition: all 0.3s ease;
+        }
+        
+        .hologram-glow:hover {
+            filter: drop-shadow(0 0 20px rgba(253, 224, 71, 0.9)) scale(1.03);
+        }
+
+        /* Float animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        .animate-float {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+
+        /* Star pulse animation */
+        @keyframes starPop {
+            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .animate-star {
+            animation: starPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Wrong answer shake animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a0f0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d97706;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="batik-bg text-amber-100 font-sans h-full min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-black antialiased overflow-x-hidden">
+
+    <!-- Audio Control Button Floating Top-Right -->
+    <div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <button id="soundToggleBtn" onclick="toggleAudio()" class="bg-amber-950/80 hover:bg-amber-900 text-amber-300 border border-amber-500/50 p-3 rounded-full shadow-lg transition transform active:scale-95 flex items-center justify-center w-12 h-12">
+            <i id="soundIcon" class="fas fa-volume-up text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Main Container Container -->
+    <main class="container mx-auto px-4 py-6 max-w-5xl flex-grow flex flex-col justify-center">
+
+        <!-- ========================================================= -->
+        <!-- C. HALAMAN LOADING -->
+        <!-- ========================================================= -->
+        <section id="screen-loading" class="flex flex-col items-center justify-center min-h-[80vh] text-center space-y-6">
+            <div class="relative animate-float">
+                <div class="w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-b from-amber-500/20 to-transparent flex items-center justify-center border-2 border-amber-500/30 p-4">
+                    <svg class="w-full h-full hologram-glow" viewBox="0 0 200 200">
+                        <!-- Background Wayang Halo -->
+                        <circle cx="100" cy="100" r="90" fill="#2a1810" stroke="#F59E0B" stroke-width="2" stroke-dasharray="6,6"/>
+                        <!-- Authentic Arjuna Silhouette with Bow -->
+                        <g transform="translate(20, 15) scale(0.8)">
+                            <!-- Bow Gendhewa -->
+                            <path d="M40,20 Q10,100 40,180" stroke="#F59E0B" stroke-width="5" fill="none" stroke-linecap="round"/>
+                            <line x1="40" y1="20" x2="40" y2="180" stroke="#FDE047" stroke-width="1.5" stroke-dasharray="3,3"/>
+                            <line x1="20" y1="100" x2="130" y2="100" stroke="#F59E0B" stroke-width="3"/>
+                            <polygon points="135,100 120,93 120,107" fill="#FDE047"/>
+                            
+                            <!-- Arjuna Profile (Gelung Supit Urang, Jamang, Sumping) -->
+                            <!-- Hairbun / Gelung -->
+                            <path d="M100,30 Q130,20 140,45 Q125,65 105,55 Z" fill="#F59E0B" stroke="#451A03" stroke-width="1.5"/>
+                            <path d="M125,35 Q145,25 150,45 Q135,60 120,50 Z" fill="#FDE047"/>
+                            <!-- Crown Filigree (Jamang) -->
+                            <path d="M85,45 Q105,35 115,50 L85,55 Z" fill="#FDE047" stroke="#78350F"/>
+                            <!-- Face Liyepan profile -->
+                            <path d="M85,50 Q75,60 80,75 Q85,85 92,85 Q95,75 95,65 Z" fill="#FDE047"/>
+                            <!-- Eye Liyepan -->
+                            <ellipse cx="83" cy="62" rx="4" ry="1.5" fill="#451A03"/>
+                            <!-- Sharp Nose -->
+                            <path d="M82,60 L70,72 L82,73 Z" fill="#FDE047"/>
+                            <!-- Ear Ornament (Sumping) -->
+                            <path d="M95,60 Q110,60 105,75 Q95,75 95,60 Z" fill="#F59E0B" stroke="#FDE047"/>
+                            <!-- Neck & Torso -->
+                            <path d="M88,85 L86,100 L110,100 L105,85 Z" fill="#FDE047"/>
+                            <path d="M86,100 Q70,120 85,150 L115,150 Q120,120 105,100 Z" fill="#DC2626" stroke="#F59E0B" stroke-width="2"/>
+                            <!-- Hands holding arrow -->
+                            <path d="M85,100 L55,100 L70,110 Z" fill="#FDE047"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <h1 class="text-3xl md:text-5xl font-wayang font-extrabold gold-gradient-text tracking-wider">
+                    🏹 PETUALANGAN ARJUNA
+                </h1>
+                <p class="text-xl md:text-2xl text-amber-300 font-semibold italic">
+                    “MISI NGGOLÈKI SIFAT”
+                </p>
+                <p class="text-amber-200/80 text-sm tracking-widest uppercase">
+                    Gim Edukasi Wayang Jawa Kelas 6 SD
+                </p>
+            </div>
+
+            <div class="w-full max-w-md space-y-2">
+                <div class="flex justify-between text-xs text-amber-300 font-bold">
+                    <span id="loading-text">Nyiyapake petualangan...</span>
+                    <span id="loading-percent">0%</span>
+                </div>
+                <div class="w-full h-4 bg-amber-950 rounded-full border border-amber-600/50 p-0.5 overflow-hidden shadow-inner">
+                    <div id="loading-bar" class="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-yellow-300 rounded-full transition-all duration-300 w-0"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- D. HALAMAN BERANDA -->
+        <!-- ========================================================= -->
+        <section id="screen-home" class="hidden wayang-card rounded-3xl p-6 md:p-10 border border-amber-500/40 my-auto">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                <!-- SEBELAH KIRI -->
+                <div class="md:col-span-6 flex flex-col items-center text-center space-y-4 border-b md:border-b-0 md:border-r border-amber-500/20 pb-6 md:pb-0 md:pr-6">
+                    <div class="relative w-44 h-44 md:w-60 md:h-60 animate-float">
+                        <svg class="w-full h-full hologram-glow" viewBox="0 0 200 200">
+                            <!-- Gunungan Wayang Background Frame -->
+                            <path d="M100,10 C130,50 185,100 175,160 Q170,185 100,190 Q30,185 25,160 C15,100 70,50 100,10 Z" fill="#3a1c0c" stroke="#F59E0B" stroke-width="3"/>
+                            <!-- Tree of Life / Kayon Ornaments -->
+                            <path d="M100,30 L100,180 M100,70 L140,50 M100,90 L155,75 M100,110 L160,100 M100,70 L60,50 M100,90 L45,75 M100,110 L40,100" stroke="#D97706" stroke-width="1.5" opacity="0.6"/>
+                            <!-- Wayang Kulit Arjuna Figure Overlay -->
+                            <g transform="translate(45, 30) scale(0.55)">
+                                <path d="M110,20 Q150,10 160,45 Q140,70 115,55 Z" fill="#F59E0B" stroke="#1A0F0A" stroke-width="2"/>
+                                <path d="M90,40 Q120,25 135,45 L95,60 Z" fill="#FDE047"/>
+                                <path d="M90,48 Q75,60 82,80 Q90,92 100,90 Q105,78 102,65 Z" fill="#FDE047"/>
+                                <path d="M85,62 L65,76 L85,78 Z" fill="#FDE047"/>
+                                <ellipse cx="83" cy="65" rx="4" ry="1.5" fill="#451A03"/>
+                                <path d="M102,62 Q120,62 115,80 Q102,80 102,62 Z" fill="#F59E0B" stroke="#FDE047"/>
+                                <path d="M92,90 L90,110 L120,110 L115,90 Z" fill="#FDE047"/>
+                                <path d="M90,110 Q70,135 90,170 L130,170 Q140,135 120,110 Z" fill="#DC2626" stroke="#FDE047" stroke-width="3"/>
+                                <!-- Bow Gendhewa -->
+                                <path d="M40,30 Q0,110 40,190" stroke="#F59E0B" stroke-width="6" fill="none"/>
+                                <line x1="40" y1="30" x2="40" y2="190" stroke="#FFF" stroke-width="2"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-wayang font-black gold-gradient-text">
+                            PETUALANGAN ARJUNA
+                        </h1>
+                        <h2 class="text-lg md:text-xl text-amber-300 font-semibold">
+                            Misi Nggolèki Sifat
+                        </h2>
+                        <p class="text-xs text-amber-200/70 mt-2 max-w-xs mx-auto">
+                            “Sinau Wayang, Ngenali Watak, Dadi Petualang!”
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SEBELAH KANAN -->
+                <div class="md:col-span-6 flex flex-col space-y-4">
+                    <button onclick="switchScreen('screen-tujuan')" class="w-full py-3.5 px-5 bg-amber-950/70 hover:bg-amber-900 border border-amber-500/40 rounded-2xl text-amber-200 font-bold text-left flex items-center justify-between transition group transform hover:-translate-y-0.5">
+                        <span class="flex items-center gap-3">
+                            <span class="bg-amber-500/20 p-2.5 rounded-xl text-amber-400 group-hover:scale-110 transition"><i class="fas fa-book-open text-lg"></i></span>
+                            <span>📚 TUJUAN PEMBELAJARAN</span>
+                        </span>
+                        <i class="fas fa-chevron-right text-amber-500/50 group-hover:text-amber-400"></i>
+                    </button>
+
+                    <button onclick="switchScreen('screen-petunjuk')" class="w-full py-3.5 px-5 bg-amber-950/70 hover:bg-amber-900 border border-amber-500/40 rounded-2xl text-amber-200 font-bold text-left flex items-center justify-between transition group transform hover:-translate-y-0.5">
+                        <span class="flex items-center gap-3">
+                            <span class="bg-amber-500/20 p-2.5 rounded-xl text-amber-400 group-hover:scale-110 transition"><i class="fas fa-gamepad text-lg"></i></span>
+                            <span>🎮 PETUNJUK GIM</span>
+                        </span>
+                        <i class="fas fa-chevron-right text-amber-500/50 group-hover:text-amber-400"></i>
+                    </button>
+
+                    <button onclick="switchScreen('screen-leaderboard')" class="w-full py-3.5 px-5 bg-amber-950/70 hover:bg-amber-900 border border-amber-500/40 rounded-2xl text-amber-200 font-bold text-left flex items-center justify-between transition group transform hover:-translate-y-0.5">
+                        <span class="flex items-center gap-3">
+                            <span class="bg-amber-500/20 p-2.5 rounded-xl text-amber-400 group-hover:scale-110 transition"><i class="fas fa-trophy text-lg"></i></span>
+                            <span>🏆 PAPAN SKOR</span>
+                        </span>
+                        <i class="fas fa-chevron-right text-amber-500/50 group-hover:text-amber-400"></i>
+                    </button>
+
+                    <div class="pt-2">
+                        <button onclick="switchScreen('screen-registrasi')" class="w-full py-4 px-6 bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-amber-950 font-black text-lg rounded-2xl shadow-xl shadow-amber-600/30 flex items-center justify-center gap-3 transition transform hover:scale-105 active:scale-95 border-2 border-amber-200">
+                            <i class="fas fa-play text-xl"></i>
+                            <span>🏹 MULAI PETUALANGAN</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- E. TUJUAN PEMBELAJARAN -->
+        <!-- ========================================================= -->
+        <section id="screen-tujuan" class="hidden wayang-card rounded-3xl p-6 md:p-10 border border-amber-500/40 my-auto">
+            <div class="max-w-2xl mx-auto space-y-6">
+                <div class="text-center space-y-2 border-b border-amber-500/30 pb-4">
+                    <h2 class="text-2xl md:text-3xl font-wayang font-bold gold-gradient-text flex items-center justify-center gap-3">
+                        <span>📚</span> TUJUAN PEMBELAJARAN
+                    </h2>
+                    <p class="text-amber-200/90 italic font-semibold">
+                        “Kanthi dolanan iki, siswa diajab bisa:”
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="bg-amber-950/60 p-4 rounded-xl border border-amber-500/20 flex items-start gap-3">
+                        <span class="bg-amber-500/20 text-amber-400 p-2 rounded-lg font-bold">1</span>
+                        <p class="text-amber-100 text-sm md:text-base pt-0.5">Ngenali tokoh <strong>Pandhawa</strong> lan <strong>Punakawan</strong> kanthi bener.</p>
+                    </div>
+                    <div class="bg-amber-950/60 p-4 rounded-xl border border-amber-500/20 flex items-start gap-3">
+                        <span class="bg-amber-500/20 text-amber-400 p-2 rounded-lg font-bold">2</span>
+                        <p class="text-amber-100 text-sm md:text-base pt-0.5">Nyebutake jeneng paraga wayang adhedhasar gambare.</p>
+                    </div>
+                    <div class="bg-amber-950/60 p-4 rounded-xl border border-amber-500/20 flex items-start gap-3">
+                        <span class="bg-amber-500/20 text-amber-400 p-2 rounded-lg font-bold">3</span>
+                        <p class="text-amber-100 text-sm md:text-base pt-0.5">Ngenali sifat utawa watak utama para paraga wayang.</p>
+                    </div>
+                    <div class="bg-amber-950/60 p-4 rounded-xl border border-amber-500/20 flex items-start gap-3">
+                        <span class="bg-amber-500/20 text-amber-400 p-2 rounded-lg font-bold">4</span>
+                        <p class="text-amber-100 text-sm md:text-base pt-0.5">Masangake sifat karo paraga sing trep lan cocog.</p>
+                    </div>
+                    <div class="bg-amber-950/60 p-4 rounded-xl border border-amber-500/20 flex items-start gap-3">
+                        <span class="bg-amber-500/20 text-amber-400 p-2 rounded-lg font-bold">5</span>
+                        <p class="text-amber-100 text-sm md:text-base pt-0.5">Njupuk nilai-nilai karakter luhur saka paraga wayang kanggo urip sadina-dina.</p>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-center">
+                    <button onclick="switchScreen('screen-home')" class="py-3 px-8 bg-amber-900/80 hover:bg-amber-800 border border-amber-500/50 rounded-xl font-bold text-amber-200 flex items-center gap-2 transition transform hover:scale-105">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>KEMBALI KE BERANDA</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- F. PETUNJUK GIM -->
+        <!-- ========================================================= -->
+        <section id="screen-petunjuk" class="hidden wayang-card rounded-3xl p-6 md:p-10 border border-amber-500/40 my-auto">
+            <div class="max-w-2xl mx-auto space-y-6">
+                <div class="text-center space-y-2 border-b border-amber-500/30 pb-4">
+                    <h2 class="text-2xl md:text-3xl font-wayang font-bold gold-gradient-text flex items-center justify-center gap-3">
+                        <span>🎮</span> PETUNJUK GIM
+                    </h2>
+                    <p class="text-amber-200/80 text-sm">
+                        Tata cara lan aturan dolanan Petualangan Arjuna
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-amber-950/60 p-4 rounded-xl border border-amber-500/20 space-y-2">
+                        <h3 class="text-amber-400 font-bold text-base flex items-center gap-2">
+                            <i class="fas fa-list-ol"></i> Cara Dolanan:
+                        </h3>
+                        <ul class="text-xs md:text-sm text-amber-100 space-y-1.5 list-disc list-inside">
+                            <li>Pilih mode <strong>SOLO</strong> utawa <strong>DUEL</strong>.</li>
+                            <li>Ketik jeneng pemain banjur klik <strong>MULAI BERMAIN</strong>.</li>
+                            <li>Rampungake <strong>Level 1 nganti Level 4</strong> kanthi urut.</li>
+                            <li>Selesaikan Boss Battle kanggo entuk gelar 🏆 <strong>“PANGERTEN WAYANG JAWA”</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-amber-950/60 p-4 rounded-xl border border-amber-500/20 space-y-2">
+                        <h3 class="text-amber-400 font-bold text-base flex items-center gap-2">
+                            <i class="fas fa-star-half-alt"></i> Sistem Poin & Nyawa:
+                        </h3>
+                        <ul class="text-xs md:text-sm text-amber-100 space-y-2">
+                            <li class="flex items-center gap-2"><span class="text-red-500 text-base">❤️</span> Nyawa awal = <strong>5 Nyawa</strong></li>
+                            <li class="flex items-center gap-2"><span class="text-yellow-400 text-base">⭐</span> Jawaban benar biasa = <strong>+10 poin</strong></li>
+                            <li class="flex items-center gap-2"><span class="text-red-400 text-base">❌</span> Jawaban salah = <strong>-1 nyawa</strong></li>
+                            <li class="flex items-center gap-2"><span class="text-amber-300 text-base">⚔️</span> Boss Battle = <strong>+20 poin / jawaban benar</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-center">
+                    <button onclick="switchScreen('screen-home')" class="py-3 px-8 bg-amber-900/80 hover:bg-amber-800 border border-amber-500/50 rounded-xl font-bold text-amber-200 flex items-center gap-2 transition transform hover:scale-105">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>KEMBALI KE BERANDA</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- G. HALAMAN REGISTRASI -->
+        <!-- ========================================================= -->
+        <section id="screen-registrasi" class="hidden wayang-card rounded-3xl p-6 md:p-10 border border-amber-500/40 my-auto">
+            <div class="max-w-md mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <h2 class="text-2xl md:text-3xl font-wayang font-bold gold-gradient-text">
+                        🏹 SIAP MIWITI PETUALANGAN?
+                    </h2>
+                    <p class="text-amber-200/80 text-sm">
+                        Pilih mode dolanan lan isi jenengmu!
+                    </p>
+                </div>
+
+                <!-- Mode Selection -->
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="btn-mode-solo" onclick="selectGameMode('SOLO')" class="p-4 rounded-2xl border-2 transition text-center space-y-2 bg-amber-900/80 border-amber-400 shadow-lg">
+                        <div class="text-3xl">🎮</div>
+                        <div class="font-bold text-amber-200 text-sm md:text-base">SOLO</div>
+                        <div class="text-[10px] text-amber-300/70">Main dhewe lan tantang kemampuanmu!</div>
+                    </button>
+
+                    <button id="btn-mode-duel" onclick="selectGameMode('DUEL')" class="p-4 rounded-2xl border-2 border-amber-900/50 bg-amber-950/40 transition text-center space-y-2 opacity-70 hover:opacity-100">
+                        <div class="text-3xl">⚔️</div>
+                        <div class="font-bold text-amber-200 text-sm md:text-base">DUEL</div>
+                        <div class="text-[10px] text-amber-300/70">Main bebarengan karo kanca!</div>
+                    </button>
+                </div>
+
+                <!-- Name Inputs Form -->
+                <form onsubmit="handleStartGame(event)" class="space-y-4 pt-2">
+                    <div id="container-player1" class="space-y-1.5">
+                        <label id="label-player1" class="text-xs font-bold text-amber-300 uppercase tracking-wider block">
+                            Nama Pemain:
+                        </label>
+                        <input type="text" id="input-player1" placeholder="Masukkan nama siswa..." maxlength="20" required class="w-full bg-amber-950/90 border border-amber-500/50 rounded-xl px-4 py-3 text-amber-100 placeholder-amber-700 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/30 text-sm font-semibold">
+                    </div>
+
+                    <div id="container-player2" class="space-y-1.5 hidden">
+                        <label class="text-xs font-bold text-amber-300 uppercase tracking-wider block">
+                            Nama Pemain 2:
+                        </label>
+                        <input type="text" id="input-player2" placeholder="Masukkan nama pemain 2..." maxlength="20" class="w-full bg-amber-950/90 border border-amber-500/50 rounded-xl px-4 py-3 text-amber-100 placeholder-amber-700 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/30 text-sm font-semibold">
+                    </div>
+
+                    <div class="pt-4 flex flex-col gap-3">
+                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-300 text-amber-950 font-black rounded-xl text-lg shadow-lg flex items-center justify-center gap-2 transition transform active:scale-95">
+                            <span>🏹 MULAI BERMAIN</span>
+                        </button>
+                        <button type="button" onclick="switchScreen('screen-home')" class="w-full py-2.5 text-xs text-amber-300/80 hover:text-amber-200 font-semibold">
+                            ⬅️ Kembali ke Beranda
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- H. HALAMAN PETA PETUALANGAN -->
+        <!-- ========================================================= -->
+        <section id="screen-map" class="hidden space-y-6 my-auto">
+            <!-- Top Player Stats Header -->
+            <div id="map-header-bar" class="wayang-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 border border-amber-500/40">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-300 font-bold">
+                        👤
+                    </div>
+                    <div>
+                        <div id="map-player-name" class="font-bold text-amber-200 text-sm md:text-base">Pemain 1</div>
+                        <div id="map-mode-badge" class="text-[10px] text-amber-400 uppercase font-bold tracking-wider">MODE: SOLO</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <div class="text-center">
+                        <div class="text-[10px] text-amber-300/80 uppercase font-bold">⭐ Skor</div>
+                        <div id="map-player-score" class="text-xl font-extrabold text-yellow-400">0</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-[10px] text-amber-300/80 uppercase font-bold">❤️ Nyawa</div>
+                        <div id="map-player-lives" class="text-xl font-extrabold text-red-500">5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Levels Sequence -->
+            <div class="wayang-card rounded-3xl p-6 md:p-8 border border-amber-500/40 space-y-6">
+                <div class="text-center space-y-1">
+                    <h2 class="text-2xl font-wayang font-bold gold-gradient-text">PETA PETUALANGAN WAYANG</h2>
+                    <p class="text-xs text-amber-200/70">Pilih level sing wis mbukak kanggo miwiti misione!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+                    <!-- LEVEL 1 -->
+                    <div id="map-node-1" onclick="startLevel(1)" class="p-5 rounded-2xl bg-gradient-to-b from-amber-900/90 to-amber-950 border-2 border-amber-400 text-center space-y-3 cursor-pointer hover:scale-105 transition shadow-lg group">
+                        <div class="w-14 h-14 mx-auto rounded-full bg-amber-500/20 border border-amber-300 flex items-center justify-center text-2xl group-hover:rotate-12 transition">
+                            🏹
+                        </div>
+                        <div>
+                            <span class="text-[10px] bg-amber-500 text-amber-950 font-black px-2 py-0.5 rounded-full">LEVEL 1</span>
+                            <h3 class="font-bold text-amber-100 mt-1 text-sm md:text-base">KENALI TOKOH</h3>
+                        </div>
+                        <div class="text-[11px] text-amber-300/80 italic">“Kenalan karo paraga Pandhawa & Punakawan”</div>
+                        <div id="status-l1" class="text-xs font-bold text-amber-400 pt-1">▶️ SIAP MAIN</div>
+                    </div>
+
+                    <!-- LEVEL 2 -->
+                    <div id="map-node-2" onclick="startLevel(2)" class="p-5 rounded-2xl bg-amber-950/40 border-2 border-amber-900/50 text-center space-y-3 opacity-60 pointer-events-none transition shadow-lg">
+                        <div class="w-14 h-14 mx-auto rounded-full bg-amber-900/30 border border-amber-800 flex items-center justify-center text-2xl">
+                            <span id="icon-l2">🔒</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] bg-amber-900 text-amber-300 font-black px-2 py-0.5 rounded-full">LEVEL 2</span>
+                            <h3 class="font-bold text-amber-100 mt-1 text-sm md:text-base">TEBAK SIFAT</h3>
+                        </div>
+                        <div class="text-[11px] text-amber-300/80 italic">“Kenali watak para paraga”</div>
+                        <div id="status-l2" class="text-xs font-bold text-amber-600 pt-1">🔒 TERKUNCI</div>
+                    </div>
+
+                    <!-- LEVEL 3 -->
+                    <div id="map-node-3" onclick="startLevel(3)" class="p-5 rounded-2xl bg-amber-950/40 border-2 border-amber-900/50 text-center space-y-3 opacity-60 pointer-events-none transition shadow-lg">
+                        <div class="w-14 h-14 mx-auto rounded-full bg-amber-900/30 border border-amber-800 flex items-center justify-center text-2xl">
+                            <span id="icon-l3">🔒</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] bg-amber-900 text-amber-300 font-black px-2 py-0.5 rounded-full">LEVEL 3</span>
+                            <h3 class="font-bold text-amber-100 mt-1 text-sm md:text-base">PASANGKAN</h3>
+                        </div>
+                        <div class="text-[11px] text-amber-300/80 italic">“Pasangna watak karo paraga”</div>
+                        <div id="status-l3" class="text-xs font-bold text-amber-600 pt-1">🔒 TERKUNCI</div>
+                    </div>
+
+                    <!-- LEVEL 4 -->
+                    <div id="map-node-4" onclick="startLevel(4)" class="p-5 rounded-2xl bg-amber-950/40 border-2 border-amber-900/50 text-center space-y-3 opacity-60 pointer-events-none transition shadow-lg">
+                        <div class="w-14 h-14 mx-auto rounded-full bg-amber-900/30 border border-amber-800 flex items-center justify-center text-2xl">
+                            <span id="icon-l4">🔒</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] bg-red-900 text-red-200 font-black px-2 py-0.5 rounded-full">LEVEL 4</span>
+                            <h3 class="font-bold text-amber-100 mt-1 text-sm md:text-base">BOSS BATTLE</h3>
+                        </div>
+                        <div class="text-[11px] text-amber-300/80 italic">“Tantangan pamungkas wayang”</div>
+                        <div id="status-l4" class="text-xs font-bold text-amber-600 pt-1">🔒 TERKUNCI</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- I. LEVEL 1 & LEVEL 2 & LEVEL 4 QUESTION CONTAINER -->
+        <!-- ========================================================= -->
+        <section id="screen-quiz" class="hidden wayang-card rounded-3xl p-6 md:p-8 border border-amber-500/40 my-auto space-y-6">
+            <!-- Quiz HUD Header -->
+            <div class="flex flex-wrap items-center justify-between border-b border-amber-500/30 pb-4 gap-2">
+                <div>
+                    <span id="quiz-level-badge" class="text-xs font-black bg-amber-500 text-amber-950 px-3 py-1 rounded-full uppercase">LEVEL 1</span>
+                    <h2 id="quiz-title" class="text-xl md:text-2xl font-bold font-wayang text-amber-200 mt-1">KENALI TOKOH</h2>
+                </div>
+
+                <div class="flex items-center gap-4 text-sm font-bold">
+                    <div class="bg-amber-950/80 border border-amber-500/30 px-3 py-1.5 rounded-xl">
+                        📊 <span id="quiz-progress-text">Soal 1 / 10</span>
+                    </div>
+                    <div class="bg-amber-950/80 border border-amber-500/30 px-3 py-1.5 rounded-xl text-yellow-400">
+                        ⭐ <span id="quiz-score-text">0</span>
+                    </div>
+                    <div class="bg-amber-950/80 border border-amber-500/30 px-3 py-1.5 rounded-xl text-red-400">
+                        ❤️ <span id="quiz-lives-text">5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Content Box -->
+            <div id="quiz-content-area" class="space-y-6">
+                <!-- Media / Illustration Area for Level 1 or Boss Battle -->
+                <div id="quiz-media-box" class="flex justify-center items-center py-2">
+                    <div id="quiz-svg-holder" class="w-40 h-40 md:w-48 md:h-48 rounded-2xl bg-amber-950/80 border-2 border-amber-500/40 flex items-center justify-center p-3 shadow-inner">
+                        <!-- Dynamic SVG character injected here -->
+                    </div>
+                </div>
+
+                <!-- Question Prompt -->
+                <div class="text-center space-y-2">
+                    <h3 id="quiz-question-prompt" class="text-lg md:text-xl font-bold text-amber-100">
+                        “Sapa jeneng paraga iki?”
+                    </h3>
+                </div>
+
+                <!-- Answer Choices (Grid 2x2) -->
+                <div id="quiz-options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                    <!-- Dynamic option buttons injected here -->
+                </div>
+            </div>
+
+            <!-- Quiz Feedback Alert Overlay -->
+            <div id="quiz-feedback-box" class="hidden p-4 rounded-xl text-center font-extrabold text-lg transition animate-bounce">
+                <!-- Feedback message text -->
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- K. LEVEL 3 — PASANGKAN (MATCHING LEVEL) -->
+        <!-- ========================================================= -->
+        <section id="screen-level3" class="hidden wayang-card rounded-3xl p-6 md:p-8 border border-amber-500/40 my-auto space-y-6">
+            <div class="flex flex-wrap items-center justify-between border-b border-amber-500/30 pb-4 gap-2">
+                <div>
+                    <span class="text-xs font-black bg-amber-500 text-amber-950 px-3 py-1 rounded-full uppercase">LEVEL 3</span>
+                    <h2 class="text-xl md:text-2xl font-bold font-wayang text-amber-200 mt-1">🧩 PASANGKAN SIFAT</h2>
+                </div>
+
+                <div class="flex items-center gap-4 text-sm font-bold">
+                    <div class="bg-amber-950/80 border border-amber-500/30 px-3 py-1.5 rounded-xl text-yellow-400">
+                        ⭐ <span id="l3-score-text">0</span>
+                    </div>
+                    <div class="bg-amber-950/80 border border-amber-500/30 px-3 py-1.5 rounded-xl text-red-400">
+                        ❤️ <span id="l3-lives-text">5</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs md:text-sm text-center text-amber-300 italic">
+                “Klik/Tap paraga ing sisih kiwa, banjur klik/tap watak sing cocok ing sisih tengen!”
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                <!-- Left Column: Tokoh -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider text-center">PARAGA WAYANG</h3>
+                    <div id="l3-tokoh-list" class="space-y-2.5">
+                        <!-- Tokoh items -->
+                    </div>
+                </div>
+
+                <!-- Right Column: Sifat -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider text-center">WATAK / SIFAT</h3>
+                    <div id="l3-sifat-list" class="space-y-2.5">
+                        <!-- Sifat target items -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="l3-feedback-box" class="hidden p-3 rounded-xl text-center font-bold text-base transition"></div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- LEVEL SUMMARY SCREEN -->
+        <!-- ========================================================= -->
+        <section id="screen-summary" class="hidden wayang-card rounded-3xl p-6 md:p-10 border border-amber-500/40 my-auto text-center space-y-6">
+            <div class="w-24 h-24 mx-auto rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-5xl animate-star">
+                🎉
+            </div>
+
+            <div class="space-y-2">
+                <h2 id="summary-title" class="text-2xl md:text-4xl font-wayang font-extrabold gold-gradient-text">
+                    LEVEL 1 RAMPUNG!
+                </h2>
+                <p id="summary-desc" class="text-amber-200 text-sm md:text-base max-w-md mx-auto">
+                    Kowe wis kasil ngrampungake misi iki kanthi apik!
+                </p>
+            </div>
+
+            <div class="bg-amber-950/60 border border-amber-500/30 rounded-2xl p-4 max-w-xs mx-auto flex justify-around">
+                <div>
+                    <div class="text-xs text-amber-400 uppercase font-bold">Skor Saiki</div>
+                    <div id="summary-score" class="text-2xl font-black text-yellow-400">0</div>
+                </div>
+                <div>
+                    <div class="text-xs text-amber-400 uppercase font-bold">Sisa Nyawa</div>
+                    <div id="summary-lives" class="text-2xl font-black text-red-500">5</div>
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-center">
+                <button id="btn-summary-next" onclick="nextLevelFromSummary()" class="py-4 px-8 bg-gradient-to-r from-amber-500 to-yellow-500 text-amber-950 font-black text-lg rounded-xl shadow-lg flex items-center gap-3 transition transform hover:scale-105">
+                    <span>➡️ LANJUT LEVEL</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- M & N. HALAMAN HASIL AKHIR & MODE DUEL RESULT -->
+        <!-- ========================================================= -->
+        <section id="screen-final" class="hidden wayang-card rounded-3xl p-6 md:p-10 border border-amber-500/40 my-auto text-center space-y-6">
+            <div class="w-28 h-28 mx-auto rounded-full bg-yellow-500/20 border-2 border-yellow-400 flex items-center justify-center text-6xl animate-star">
+                🏆
+            </div>
+
+            <div id="final-title-container" class="space-y-2">
+                <span id="final-gelar-badge" class="bg-yellow-500 text-amber-950 text-xs font-extrabold px-4 py-1 rounded-full uppercase tracking-wider">🏆 PANGERTEN WAYANG JAWA</span>
+                <h2 class="text-3xl md:text-5xl font-wayang font-black gold-gradient-text">
+                    🎉 SELAMAT! 🎉
+                </h2>
+                <p id="final-subtext" class="text-amber-200 text-sm md:text-base max-w-md mx-auto">
+                    Kowe wis kasil ngrampungake kabeh misi petualangan wayang!
+                </p>
+            </div>
+
+            <!-- Single Player Result Card -->
+            <div id="final-single-card" class="bg-amber-950/80 border border-amber-500/40 rounded-2xl p-6 max-w-sm mx-auto space-y-3">
+                <div class="text-amber-300 font-bold text-lg" id="final-player-name">Nama Pemain</div>
+                <div class="grid grid-cols-2 gap-2 border-t border-amber-500/20 pt-3">
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-bold uppercase">Skor Akhir</div>
+                        <div id="final-player-score" class="text-2xl font-black text-yellow-400">0</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-bold uppercase">Sisa Nyawa</div>
+                        <div id="final-player-lives" class="text-2xl font-black text-red-500">5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duel Comparison Result Card -->
+            <div id="final-duel-card" class="hidden space-y-4 max-w-lg mx-auto">
+                <h3 class="text-xl font-bold font-wayang text-amber-300">⚔️ HASIL DUEL ⚔️</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-amber-950/80 p-4 rounded-xl border border-amber-500/30 space-y-1">
+                        <div id="duel-p1-name" class="font-bold text-amber-200">Pemain 1</div>
+                        <div id="duel-p1-score" class="text-2xl font-extrabold text-yellow-400">0 Pts</div>
+                    </div>
+                    <div class="bg-amber-950/80 p-4 rounded-xl border border-amber-500/30 space-y-1">
+                        <div id="duel-p2-name" class="font-bold text-amber-200">Pemain 2</div>
+                        <div id="duel-p2-score" class="text-2xl font-extrabold text-yellow-400">0 Pts</div>
+                    </div>
+                </div>
+                <div id="duel-winner-box" class="bg-yellow-500/20 border border-yellow-400 p-4 rounded-xl font-extrabold text-lg text-yellow-300">
+                    🏆 PEMENANG: Pemain 1
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3 pt-4">
+                <button onclick="switchScreen('screen-leaderboard')" class="py-3 px-6 bg-amber-900 hover:bg-amber-800 border border-amber-500/50 rounded-xl font-bold text-amber-200 flex items-center gap-2 transition">
+                    🏆 PAPAN SKOR
+                </button>
+                <button onclick="restartGame()" class="py-3 px-6 bg-amber-600 hover:bg-amber-500 text-amber-950 font-extrabold rounded-xl shadow-lg flex items-center gap-2 transition">
+                    🔄 MAIN MANEH
+                </button>
+                <button onclick="switchScreen('screen-home')" class="py-3 px-6 bg-amber-950 hover:bg-amber-900 border border-amber-500/30 rounded-xl font-bold text-amber-300 flex items-center gap-2 transition">
+                    🏠 BERANDA
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- O. PAPAN SKOR (LEADERBOARD) -->
+        <!-- ========================================================= -->
+        <section id="screen-leaderboard" class="hidden wayang-card rounded-3xl p-6 md:p-8 border border-amber-500/40 my-auto space-y-6">
+            <div class="text-center space-y-1 border-b border-amber-500/30 pb-4">
+                <h2 class="text-2xl md:text-3xl font-wayang font-bold gold-gradient-text flex items-center justify-center gap-3">
+                    <span>🏆</span> PAPAN SKOR
+                </h2>
+                <p class="text-xs md:text-sm text-amber-300/80">
+                    Para Petualang Wayang Jawa Paling Unggul
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs md:text-sm">
+                    <thead>
+                        <tr class="bg-amber-950/90 text-amber-400 border-b border-amber-500/30 uppercase text-[10px] md:text-xs tracking-wider">
+                            <th class="p-3">Peringkat</th>
+                            <th class="p-3">Nama Pemain</th>
+                            <th class="p-3">Mode</th>
+                            <th class="p-3">Skor</th>
+                            <th class="p-3">Gelar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-tbody" class="divide-y divide-amber-500/10 text-amber-100">
+                        <!-- Rows dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-center gap-4 pt-2">
+                <button onclick="switchScreen('screen-home')" class="py-3 px-6 bg-amber-900 hover:bg-amber-800 border border-amber-500/40 rounded-xl font-bold text-amber-200 flex items-center gap-2">
+                    🏠 BERANDA
+                </button>
+                <button onclick="switchScreen('screen-registrasi')" class="py-3 px-6 bg-amber-500 hover:bg-amber-400 text-amber-950 font-bold rounded-xl shadow-lg flex items-center gap-2">
+                    🔄 MAIN LAGI
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-[11px] text-amber-500/60 font-medium">
+        🏹 Petualangan Arjuna: Misi Nggolèki Sifat &copy; Gim Edukasi Bahasa Jawa SD
+    </footer>
+
+    <script>
+        /* =========================================================
+           1. DATA WAYANG DATABASE & QUESTION BANKS (AUTHENTIC WAYANG KULIT SVGS)
+           ========================================================= */
+        const WAYANG_CHARACTERS = {
+            yudhistira: {
+                name: "Yudhistira",
+                group: "Pandhawa",
+                sifat: "jujur, sabar, adil, bijaksana",
+                desc: "Paraga pembawa katentreman, ora tau goroh, lan adil banget.",
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <rect width="100" height="100" rx="15" fill="#1E1B4B"/>
+                    <g transform="translate(10, 5) scale(0.8)">
+                        <!-- Gelung Klitik / Smooth Royal Hairbun -->
+                        <path d="M55,12 Q80,5 85,28 Q70,45 52,35 Z" fill="#F59E0B" stroke="#78350F" stroke-width="1.5"/>
+                        <path d="M70,15 Q88,8 90,28 Q78,40 65,30 Z" fill="#FDE047"/>
+                        <!-- Crown / Jamang Filigree -->
+                        <path d="M42,25 Q62,18 70,30 L45,35 Z" fill="#FDE047" stroke="#D97706" stroke-width="1"/>
+                        <!-- Sumping Ear Ornament -->
+                        <path d="M55,35 Q70,35 65,48 Q55,48 55,35 Z" fill="#F59E0B" stroke="#FDE047"/>
+                        <!-- Profile Face (Liyepan Alus) -->
+                        <path d="M42,28 Q32,38 37,52 Q43,62 52,60 Q56,50 54,38 Z" fill="#FDE047"/>
+                        <!-- Pointed Nose -->
+                        <path d="M38,38 L24,48 L38,50 Z" fill="#FDE047"/>
+                        <!-- Slender Liyepan Eye -->
+                        <ellipse cx="37" cy="40" rx="3.5" ry="1.2" fill="#451A03"/>
+                        <!-- Calm Smile -->
+                        <path d="M38,53 Q42,56 46,53" stroke="#78350F" stroke-width="1" fill="none"/>
+                        <!-- Neck & Royal Costume -->
+                        <path d="M46,60 L44,72 L62,72 L58,60 Z" fill="#FDE047"/>
+                        <!-- Kampuh / Prada Clothes -->
+                        <path d="M44,72 Q28,88 40,110 L75,110 Q80,88 62,72 Z" fill="#78350F" stroke="#FDE047" stroke-width="2"/>
+                        <path d="M40,85 L75,85 M43,98 L72,98" stroke="#F59E0B" stroke-width="1.5"/>
+                    </g>
+                </svg>`
+            },
+            bima: {
+                name: "Bima",
+                group: "Pandhawa",
+                sifat: "kuat, tegas, berani",
+                desc: "Paraga sing dedege gagah sakti, duwe Kuku Pancanaka lan setya marang bebener.",
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <rect width="100" height="100" rx="15" fill="#451A03"/>
+                    <g transform="translate(8, 2) scale(0.82)">
+                        <!-- Supit Urang Hair Crest (Shrimp Tail Shape) -->
+                        <path d="M50,8 Q85,0 80,35 Q60,42 48,25 Z" fill="#1A0F0A" stroke="#F59E0B" stroke-width="2"/>
+                        <path d="M65,10 Q88,5 82,32 Q68,38 58,22 Z" fill="#DC2626"/>
+                        <!-- Crown Jamang -->
+                        <path d="M35,22 Q60,15 68,30 L38,34 Z" fill="#FDE047" stroke="#D97706"/>
+                        <!-- Fierce Profile Face & Mustache -->
+                        <path d="M38,28 Q28,38 34,55 Q42,65 54,63 Q58,48 54,34 Z" fill="#FDE047"/>
+                        <!-- Large Round Eye (Mata Telengan) -->
+                        <circle cx="36" cy="40" r="3.5" fill="#FFF"/>
+                        <circle cx="36" cy="40" r="2" fill="#000"/>
+                        <!-- Sharp Nose & Gagah Mustache -->
+                        <path d="M34,40 L18,48 L34,52 Z" fill="#FDE047"/>
+                        <path d="M26,50 Q18,54 30,57 Q38,56 42,52" stroke="#000" stroke-width="2.5" fill="#000"/>
+                        <!-- Sumping & Kelat Bahu -->
+                        <path d="M52,35 Q68,35 62,50 Q52,50 52,35 Z" fill="#F59E0B" stroke="#FDE047"/>
+                        <!-- Neck & Broad Muscular Chest -->
+                        <path d="M44,63 L40,78 L68,78 L62,63 Z" fill="#FDE047"/>
+                        <!-- Kain Poleng (Checkered Black & White Loincloth) -->
+                        <path d="M40,78 Q20,92 35,115 L78,115 Q88,92 68,78 Z" fill="#FFF" stroke="#000" stroke-width="2"/>
+                        <!-- Checkered Pattern -->
+                        <path d="M40,78 L58,115 M54,78 L72,115 M32,92 L78,92 M28,104 L82,104" stroke="#000" stroke-width="2"/>
+                        <rect x="42" y="80" width="8" height="11" fill="#000"/>
+                        <rect x="58" y="80" width="8" height="11" fill="#000"/>
+                        <rect x="50" y="92" width="9" height="12" fill="#000"/>
+                        <rect x="67" y="92" width="9" height="12" fill="#000"/>
+                        <!-- Kuku Pancanaka (Long Thumb Nail) -->
+                        <path d="M20,75 Q5,70 12,85 Q22,88 28,80 Z" fill="#FFF" stroke="#F59E0B" stroke-width="1.5"/>
+                    </g>
+                </svg>`
+            },
+            arjuna: {
+                name: "Arjuna",
+                group: "Pandhawa",
+                sifat: "terampil, cerdas, lembut",
+                desc: "Paraga sing prigel manah, rupane bagus, wicarane alus, lan pinter.",
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <rect width="100" height="100" rx="15" fill="#78350F"/>
+                    <g transform="translate(10, 5) scale(0.8)">
+                        <!-- Bow Gendhewa in Background -->
+                        <path d="M15,10 Q-5,55 15,105" stroke="#F59E0B" stroke-width="3.5" fill="none"/>
+                        <line x1="15" y1="10" x2="15" y2="105" stroke="#FDE047" stroke-width="1"/>
+                        
+                        <!-- Gelung Supit Urang Mungkur Hairbun -->
+                        <path d="M55,10 Q82,2 85,26 Q70,42 50,32 Z" fill="#1A0F0A" stroke="#F59E0B" stroke-width="1.5"/>
+                        <path d="M68,12 Q88,6 88,26 Q76,38 62,28 Z" fill="#FDE047"/>
+                        <!-- Crown Jamang Filigree -->
+                        <path d="M40,22 Q60,15 68,28 L42,32 Z" fill="#FDE047" stroke="#D97706"/>
+                        <!-- Refined Liyepan Profile Face -->
+                        <path d="M40,26 Q30,36 35,50 Q42,60 50,58 Q54,48 52,36 Z" fill="#FDE047"/>
+                        <!-- Slender Nose & Eye -->
+                        <path d="M36,36 L22,46 L36,48 Z" fill="#FDE047"/>
+                        <ellipse cx="35" cy="38" rx="3.5" ry="1.2" fill="#451A03"/>
+                        <path d="M36,50 Q40,53 44,50" stroke="#78350F" stroke-width="1" fill="none"/>
+                        <!-- Sumping & Neck Ornaments -->
+                        <path d="M52,32 Q66,32 62,45 Q52,45 52,32 Z" fill="#F59E0B" stroke="#FDE047"/>
+                        <path d="M44,58 L42,70 L60,70 L56,58 Z" fill="#FDE047"/>
+                        <!-- Red Prada Skirt (Kampuh) -->
+                        <path d="M42,70 Q25,85 36,108 L72,108 Q78,85 60,70 Z" fill="#DC2626" stroke="#FDE047" stroke-width="2"/>
+                        <path d="M38,82 L70,82 M40,95 L68,95" stroke="#F59E0B" stroke-width="1.5"/>
+                    </g>
+                </svg>`
+            },
+            nakula: {
+                name: "Nakula",
+                group: "Pandhawa",
+                sifat: "baik, sopan, teliti",
+                desc: "Kembarane Sadewa, prigel ngrumat jaran, seneng tetulung, lan sopan.",
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <rect width="100" height="100" rx="15" fill="#065F46"/>
+                    <g transform="translate(10, 5) scale(0.8)">
+                        <!-- Royal Crown (Jamang 3 Susun) -->
+                        <path d="M52,10 Q78,5 82,26 Q68,40 48,30 Z" fill="#047857" stroke="#F59E0B" stroke-width="1.5"/>
+                        <path d="M65,12 Q85,7 85,26 Q74,36 60,26 Z" fill="#FDE047"/>
+                        <path d="M38,20 Q58,13 66,26 L40,30 Z" fill="#FDE047" stroke="#D97706"/>
+                        <!-- Refined Face Profile -->
+                        <path d="M38,24 Q28,34 33,48 Q40,58 48,56 Q52,46 50,34 Z" fill="#FDE047"/>
+                        <path d="M34,34 L20,44 L34,46 Z" fill="#FDE047"/>
+                        <ellipse cx="33" cy="36" rx="3" ry="1.2" fill="#000"/>
+                        <!-- Sumping & Neck -->
+                        <path d="M50,30 Q64,30 60,42 Q50,42 50,30 Z" fill="#F59E0B" stroke="#FDE047"/>
+                        <path d="M42,56 L40,68 L58,68 L54,56 Z" fill="#FDE047"/>
+                        <!-- Green Gold Batik Skirt -->
+                        <path d="M40,68 Q24,83 34,105 L70,105 Q76,83 58,68 Z" fill="#047857" stroke="#FDE047" stroke-width="2"/>
+                        <path d="M36,80 L66,80 M38,92 L64,92" stroke="#F59E0B" stroke-width="1.5"/>
+                    </g>
+                </svg>`
+            },
+            sadewa: {
+                name: "Sadewa",
+                group: "Pandhawa",
+                sifat: "cerdas, bijaksana",
+                desc: "Kembarane Nakula, pinter babagan kawruh lan petungan, sarta wicaksana.",
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <rect width="100" height="100" rx="15" fill="#1E40AF"/>
+                    <g transform="translate(10, 5) scale(0.8)">
+                        <!-- Royal Crown (Jamang Twin Crown) -->
+                        <path d="M52,10 Q78,5 82,26 Q68,40 48,30 Z" fill="#1D4ED8" stroke="#F59E0B" stroke-width="1.5"/>
+                        <path d="M65,12 Q85,7 85,26 Q74,36 60,26 Z" fill="#FDE047"/>
+                        <path d="M38,20 Q58,13 66,26 L40,30 Z" fill="#FDE047" stroke="#D97706"/>
+                        <!-- Refined Face Profile -->
+                        <path d="M38,24 Q28,34 33,48 Q40,58 48,56 Q52,46 50,34 Z" fill="#FDE047"/>
+                        <path d="M34,34 L20,44 L34,46 Z" fill="#FDE047"/>
+                        <ellipse cx="33" cy="36" rx="3" ry="1.2" fill="#000"/>
+                        <!-- Sumping & Neck -->
+                        <path d="M50,30 Q64,30 60,42 Q50,42 50,30 Z" fill="#F59E0B" stroke="#FDE047"/>
+                        <path d="M42,56 L40,68 L58,68 L54,56 Z" fill="#FDE047"/>
+                        <!-- Blue Gold Batik Skirt -->
+                        <path d="M40,68 Q24,83 34,105 L70,105 Q76,83 58,68 Z" fill="#1D4ED8" stroke="#FDE047" stroke-width="2"/>
+                        <path d="M36,80 L66,80 M38,92 L64,92" stroke="#F59E0B" stroke-width="1.5"/>
+                    </g>
+                </svg>`
+            },
+            semar: {
+                name: "Semar",
+                group: "Punakawan",
+                sifat: "bijaksana, suka memberi pitutur, ngemong",
+                desc: "Pamong para Pandhawa sing kawentar wicaksana lan seneng menehi pitutur becik.",
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <rect width="100" height="100" rx="15" fill="#374151"/>
+                    <g transform="translate(8, 5) scale(0.83)">
+                        <!-- White Hair Bun Kuncung in Front -->
+                        <path d="M28,15 C22,5 38,2 35,18 Z" fill="#FFF" stroke="#000" stroke-width="1.5"/>
+                        <!-- Plump Round Head & Body -->
+                        <circle cx="48" cy="32" r="18" fill="#FFF" stroke="#000" stroke-width="2"/>
+                        <!-- Semar Profile: Flat nose, small eyes, wide smile -->
+                        <ellipse cx="38" cy="30" rx="2.5" ry="1.5" fill="#000"/>
+                        <path d="M30,33 Q22,36 32,38 Z" fill="#FFF" stroke="#000" stroke-width="1"/>
+                        <path d="M32,40 Q40,48 50,42" stroke="#000" stroke-width="2" fill="none"/>
+                        <!-- Big Plump Body & Belly -->
+                        <path d="M32,48 Q10,65 30,102 L75,102 Q90,70 62,48 Z" fill="#111827" stroke="#FFF" stroke-width="2"/>
+                        <!-- Sarung Tumpal Batik Pattern -->
+                        <path d="M30,75 Q50,70 75,75 M32,88 Q50,83 73,88" stroke="#F59E0B" stroke-width="2"/>
+                        <polygon points="45,75 52,88 38,88" fill="#F59E0B"/>
+                        <polygon points="60,75 67,88 53,88" fill="#F59E0B"/>
+                        <!-- Hand raised giving advice -->
+                        <path d="M30,58 Q18,52 22,46 Q28,48 34,54 Z" fill="#FFF" stroke="#000" stroke-width="1.5"/>
+                    </g>
+                </svg>`
+            },
+            gareng: {
+                name: "Gareng",
+                group: "Punakawan",
+                sifat: "lucu, sederhana, rendah hati",
+                desc: "Anak mbarep angkat Semar sing mripat kero, cilik, lan andhap asor.",
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <rect width="100" height="100" rx="15" fill="#92400E"/>
+                    <g transform="translate(10, 5) scale(0.8)">
+                        <!-- Short Hair bun -->
+                        <circle cx="50" cy="18" r="6" fill="#F59E0B"/>
+                        <!-- Head Profile -->
+                        <circle cx="50" cy="32" r="15" fill="#FDE047" stroke="#78350F" stroke-width="1.5"/>
+                        <!-- Bulbous Round Nose & Cross-eyes (Mata Kero) -->
+                        <circle cx="35" cy="32" r="5" fill="#DC2626"/>
+                        <circle cx="42" cy="28" r="2" fill="#000"/>
+                        <circle cx="48" cy="28" r="2" fill="#000"/>
+                        <path d="M40,38 Q48,42 54,37" stroke="#000" stroke-width="2" fill="none"/>
+                        <!-- Dwarf Body & Curved Arm (Tangan Ceko) -->
+                        <path d="M38,46 Q25,60 35,95 L68,95 Q75,60 60,46 Z" fill="#B45309" stroke="#FDE047" stroke-width="1.5"/>
+                        <!-- Curved arm -->
+                        <path d="M38,50 Q22,52 28,65 Q35,60 40,56 Z" fill="#FDE047" stroke="#78350F"/>
+                        <!-- Limping Feet (Kaki Pincang) -->
+                        <path d="M38,95 L30,105 L45,105 Z M55,95 L52,105 L65,105 Z" fill="#FDE047"/>
+                    </g>
+                </svg>`
+            },
+            petruk: {
+                name: "Petruk",
+                group: "Punakawan",
+                sifat: "lucu, pandai berbicara",
+                desc: "Dedege dhuwur trodhong, irunge dawa, lan pinter guneman gawe guyu.",
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <rect width="100" height="100" rx="15" fill="#065F46"/>
+                    <g transform="translate(12, 2) scale(0.82)">
+                        <!-- Hair Crest behind -->
+                        <path d="M55,10 Q70,5 65,22 Z" fill="#047857" stroke="#FDE047"/>
+                        <!-- Head & Extremely Long Pointed Nose (Irung Dawa) -->
+                        <circle cx="52" cy="28" r="14" fill="#FDE047" stroke="#047857" stroke-width="1.5"/>
+                        <!-- Famous Long Nose -->
+                        <path d="M42,26 L5,34 L42,38 Z" fill="#FDE047" stroke="#D97706" stroke-width="1.5"/>
+                        <!-- Eye & Wide Smile Mouth -->
+                        <circle cx="44" cy="22" r="2.5" fill="#000"/>
+                        <path d="M38,34 Q45,44 55,36" stroke="#000" stroke-width="2" fill="none"/>
+                        <!-- Tall Slender Frame Body -->
+                        <path d="M42,42 L40,60 L62,60 L58,42 Z" fill="#FDE047"/>
+                        <path d="M40,60 Q28,80 38,112 L65,112 Q72,80 62,60 Z" fill="#047857" stroke="#FDE047" stroke-width="2"/>
+                        <path d="M38,78 L65,78 M36,95 L66,95" stroke="#F59E0B" stroke-width="1.5"/>
+                    </g>
+                </svg>`
+            },
+            bagong: {
+                name: "Bagong",
+                group: "Punakawan",
+                sifat: "lucu, polos, apa adanya",
+                desc: "Awake lemu mblenduk, mripate amba, omongane ceplas-ceplos lan lucu.",
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                    <rect width="100" height="100" rx="15" fill="#B91C1C"/>
+                    <g transform="translate(8, 5) scale(0.83)">
+                        <!-- Short Hair Kuncung -->
+                        <path d="M45,12 Q50,4 55,12 Z" fill="#000"/>
+                        <!-- Round Face -->
+                        <circle cx="50" cy="30" r="18" fill="#FDE047" stroke="#991B1B" stroke-width="1.5"/>
+                        <!-- Large Protruding Eyes (Mata Amba/Pelot) -->
+                        <circle cx="38" cy="26" r="5" fill="#FFF" stroke="#000"/>
+                        <circle cx="38" cy="26" r="2.5" fill="#000"/>
+                        <circle cx="58" cy="26" r="5" fill="#FFF" stroke="#000"/>
+                        <circle cx="58" cy="26" r="2.5" fill="#000"/>
+                        <!-- Wide Open Lips / Mouth -->
+                        <ellipse cx="48" cy="38" rx="9" ry="5" fill="#DC2626" stroke="#000" stroke-width="1.5"/>
+                        <!-- Round Fat Body & Belly -->
+                        <path d="M32,46 Q10,65 30,102 L72,102 Q90,65 66,46 Z" fill="#991B1B" stroke="#FDE047" stroke-width="2"/>
+                        <!-- Red White Pattern -->
+                        <path d="M30,72 Q50,68 72,72 M31,86 Q50,82 71,86" stroke="#F59E0B" stroke-width="2"/>
+                    </g>
+                </svg>`
+            }
+        };
+
+        // Question Bank Level 2 (Tebak Sifat)
+        const LEVEL2_QUESTIONS = [
+            {
+                prompt: "Paraga sing misuwur paling jujur, sabar, adil, lan bijaksana yaiku...",
+                correct: "yudhistira",
+                options: ["bima", "yudhistira", "gareng", "petruk"]
+            },
+            {
+                prompt: "Paraga sing nduweni awak gagah, kuat, tegas, lan kendel yaiku...",
+                correct: "bima",
+                options: ["arjuna", "bagong", "bima", "semar"]
+            },
+            {
+                prompt: "Paraga Pandhawa sing pinter manah, terampil, lan wicarane alus yaiku...",
+                correct: "arjuna",
+                options: ["arjuna", "nakula", "sadewa", "gareng"]
+            },
+            {
+                prompt: "Pamong para Pandhawa sing wicaksana lan seneng menehi pitutur becik yaiku...",
+                correct: "semar",
+                options: ["petruk", "semar", "bagong", "bima"]
+            },
+            {
+                prompt: "Paraga Punakawan sing irunge dawa, lucu, lan pinter guneman yaiku...",
+                correct: "petruk",
+                options: ["gareng", "bagong", "petruk", "semar"]
+            },
+            {
+                prompt: "Paraga Punakawan sing awake lemu, mripate amba, lan polos apa anane yaiku...",
+                correct: "bagong",
+                options: ["bagong", "petruk", "yudhistira", "nakula"]
+            },
+            {
+                prompt: "Kembarane Sadewa sing watake sopan, teliti, lan seneng tetulung yaiku...",
+                correct: "nakula",
+                options: ["sadewa", "nakula", "arjuna", "bima"]
+            },
+            {
+                prompt: "Paraga sing pinter babagan kawruh petungan lan bijaksana yaiku...",
+                correct: "sadewa",
+                options: ["sadewa", "semar", "gareng", "yudhistira"]
+            },
+            {
+                prompt: "Paraga Punakawan sing cendhak, kero, lan nduweni sifat rendah hati yaiku...",
+                correct: "gareng",
+                options: ["gareng", "petruk", "bagong", "bima"]
+            },
+            {
+                prompt: "Paraga wayang sing duwe Kuku Pancanaka lan watake tegas mbela bebener yaiku...",
+                correct: "bima",
+                options: ["yudhistira", "bima", "arjuna", "nakula"]
+            }
+        ];
+
+        // Question Bank Level 4 (Boss Battle - Exactly 5 questions)
+        const BOSS_QUESTIONS = [
+            {
+                prompt: "Sapa wae paraga sing klebu ing kelompok Pandhawa?",
+                correct: "Yudhistira, Bima, Arjuna, Nakula, Sadewa",
+                options: [
+                    "Yudhistira, Bima, Arjuna, Nakula, Sadewa",
+                    "Semar, Gareng, Petruk, Bagong, Arjuna",
+                    "Bima, Arjuna, Semar, Gareng, Sadewa",
+                    "Yudhistira, Semar, Petruk, Bagong, Nakula"
+                ]
+            },
+            {
+                prompt: "Apa sifat utama sing bisa ditulad saka paraga Yudhistira?",
+                correct: "Jujur, sabar, lan seneng tumindak adil",
+                options: [
+                    "Jujur, sabar, lan seneng tumindak adil",
+                    "Lucu, polos, lan ceplas-ceplos",
+                    "Seneng perang lan gampang nesu",
+                    "Pinter umuk lan seneng pamer"
+                ]
+            },
+            {
+                prompt: "Sapa paraga Punakawan sing bertindak minangka pamong lan sejatine dewa sing ngemong para Pandhawa?",
+                correct: "Semar",
+                options: ["Gareng", "Petruk", "Semar", "Bagong"]
+            },
+            {
+                prompt: "Sifat utama paraga Bima lan Arjuna nuduhake nilai karakter...",
+                correct: "Kendel mbela bebener lan trampil sinau",
+                options: [
+                    "Kendel mbela bebener lan trampil sinau",
+                    "Gampang nyerah yen nemu kesulitan",
+                    "Mung mikirake awake dhewe",
+                    "Seneng tumindak licik"
+                ]
+            },
+            {
+                prompt: "Punakawan iku paraga wayang sing nduweni peran minangka...",
+                correct: "Abdi lan pamong sing lucu sarta menehi pitutur luhur",
+                options: [
+                    "Abdi lan pamong sing lucu sarta menehi pitutur luhur",
+                    "Musuh utama para Pandhawa",
+                    "Raja Kerajaan Astina",
+                    "Prajurit raksasa sing galak"
+                ]
+            }
+        ];
+
+        /* =========================================================
+           2. WEB AUDIO API SYNTHESIZER
+           ========================================================= */
+        let audioMuted = false;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (audioMuted) return;
+            try {
+                initAudio();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(160, now + 0.15);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'victory') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const subOsc = audioCtx.createOscillator();
+                        const subGain = audioCtx.createGain();
+                        subOsc.connect(subGain);
+                        subGain.connect(audioCtx.destination);
+                        subOsc.type = 'sine';
+                        subOsc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                        subGain.gain.setValueAtTime(0.2, now + idx * 0.12);
+                        subGain.gain.linearRampToValueAtTime(0.01, now + idx * 0.12 + 0.25);
+                        subOsc.start(now + idx * 0.12);
+                        subOsc.stop(now + idx * 0.12 + 0.25);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio play fallback", e);
+            }
+        }
+
+        function toggleAudio() {
+            audioMuted = !audioMuted;
+            const icon = document.getElementById('soundIcon');
+            if (audioMuted) {
+                icon.className = 'fas fa-volume-mute text-xl text-red-400';
+            } else {
+                icon.className = 'fas fa-volume-up text-xl text-amber-300';
+                playSound('click');
+            }
+        }
+
+        /* =========================================================
+           3. GAME STATE MANAGEMENT
+           ========================================================= */
+        let gameMode = 'SOLO'; // 'SOLO' or 'DUEL'
+        let currentLevel = 1;
+        let currentPlayerIdx = 0;
+
+        let players = [
+            {
+                name: "",
+                score: 0,
+                lives: 5,
+                unlockedLevel: 1,
+                completed: false,
+                gelar: "⭐ Petualang Wayang"
+            }
+        ];
+
+        let quizCurrentIndex = 0;
+        let quizQuestionsPool = [];
+        let selectedL3TokohKey = null;
+        let l3MatchedCount = 0;
+
+        /* =========================================================
+           4. SCREEN NAVIGATION
+           ========================================================= */
+        const SCREENS = [
+            'screen-loading',
+            'screen-home',
+            'screen-tujuan',
+            'screen-petunjuk',
+            'screen-registrasi',
+            'screen-map',
+            'screen-quiz',
+            'screen-level3',
+            'screen-summary',
+            'screen-final',
+            'screen-leaderboard'
+        ];
+
+        function switchScreen(screenId) {
+            playSound('click');
+            SCREENS.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(screenId);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('animate-fade-in');
+            }
+
+            if (screenId === 'screen-map') {
+                updateMapUI();
+            } else if (screenId === 'screen-leaderboard') {
+                renderLeaderboardTable();
+            }
+        }
+
+        /* =========================================================
+           5. LOADING SCREEN SIMULATION
+           ========================================================= */
+        window.addEventListener('DOMContentLoaded', () => {
+            let progress = 0;
+            const loadingBar = document.getElementById('loading-bar');
+            const loadingPercent = document.getElementById('loading-percent');
+
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 12) + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        switchScreen('screen-home');
+                    }, 400);
+                }
+                loadingBar.style.width = `${progress}%`;
+                loadingPercent.textContent = `${progress}%`;
+            }, 120);
+        });
+
+        /* =========================================================
+           6. REGISTRATION & MODE SELECTION
+           ========================================================= */
+        function selectGameMode(mode) {
+            playSound('click');
+            gameMode = mode;
+            const btnSolo = document.getElementById('btn-mode-solo');
+            const btnDuel = document.getElementById('btn-mode-duel');
+            const p2Container = document.getElementById('container-player2');
+            const p2Input = document.getElementById('input-player2');
+
+            if (mode === 'SOLO') {
+                btnSolo.className = "p-4 rounded-2xl border-2 transition text-center space-y-2 bg-amber-900/80 border-amber-400 shadow-lg";
+                btnDuel.className = "p-4 rounded-2xl border-2 border-amber-900/50 bg-amber-950/40 transition text-center space-y-2 opacity-70 hover:opacity-100";
+                p2Container.classList.add('hidden');
+                p2Input.removeAttribute('required');
+            } else {
+                btnDuel.className = "p-4 rounded-2xl border-2 transition text-center space-y-2 bg-amber-900/80 border-amber-400 shadow-lg";
+                btnSolo.className = "p-4 rounded-2xl border-2 border-amber-900/50 bg-amber-950/40 transition text-center space-y-2 opacity-70 hover:opacity-100";
+                p2Container.classList.remove('hidden');
+                p2Input.setAttribute('required', 'true');
+            }
+        }
+
+        function handleStartGame(e) {
+            e.preventDefault();
+            playSound('click');
+
+            const p1Name = document.getElementById('input-player1').value.trim();
+            const p2Name = document.getElementById('input-player2').value.trim();
+
+            if (!p1Name) return;
+
+            players = [
+                {
+                    name: p1Name,
+                    score: 0,
+                    lives: 5,
+                    unlockedLevel: 1,
+                    completed: false,
+                    gelar: "⭐ Petualang Wayang"
+                }
+            ];
+
+            if (gameMode === 'DUEL' && p2Name) {
+                players.push({
+                    name: p2Name,
+                    score: 0,
+                    lives: 5,
+                    unlockedLevel: 1,
+                    completed: false,
+                    gelar: "⭐ Petualang Wayang"
+                });
+            }
+
+            currentPlayerIdx = 0;
+            switchScreen('screen-map');
+        }
+
+        /* =========================================================
+           7. MAP UI & LEVEL UNLOCKING
+           ========================================================= */
+        function updateMapUI() {
+            const p = players[currentPlayerIdx];
+            document.getElementById('map-player-name').textContent = p.name + (gameMode === 'DUEL' ? ` (Pemain ${currentPlayerIdx + 1})` : '');
+            document.getElementById('map-mode-badge').textContent = `MODE: ${gameMode}`;
+            document.getElementById('map-player-score').textContent = p.score;
+            document.getElementById('map-player-lives').textContent = p.lives;
+
+            for (let lvl = 1; lvl <= 4; lvl++) {
+                const node = document.getElementById(`map-node-${lvl}`);
+                const status = document.getElementById(`status-l${lvl}`);
+                const icon = document.getElementById(`icon-l${lvl}`);
+
+                if (lvl <= p.unlockedLevel) {
+                    node.className = "p-5 rounded-2xl bg-gradient-to-b from-amber-900/90 to-amber-950 border-2 border-amber-400 text-center space-y-3 cursor-pointer hover:scale-105 transition shadow-lg group";
+                    if (status) status.textContent = "▶️ SIAP MAIN";
+                    if (status) status.className = "text-xs font-bold text-amber-400 pt-1";
+                    if (icon) icon.textContent = lvl === 1 ? "🏹" : lvl === 2 ? "🧠" : lvl === 3 ? "🧩" : "⚔️";
+                } else {
+                    node.className = "p-5 rounded-2xl bg-amber-950/40 border-2 border-amber-900/50 text-center space-y-3 opacity-60 pointer-events-none transition shadow-lg";
+                    if (status) status.textContent = "🔒 TERKUNCI";
+                    if (status) status.className = "text-xs font-bold text-amber-600 pt-1";
+                    if (icon) icon.textContent = "🔒";
+                }
+            }
+        }
+
+        function startLevel(lvl) {
+            playSound('click');
+            currentLevel = lvl;
+            quizCurrentIndex = 0;
+
+            if (lvl === 1) {
+                setupLevel1();
+                switchScreen('screen-quiz');
+            } else if (lvl === 2) {
+                setupLevel2();
+                switchScreen('screen-quiz');
+            } else if (lvl === 3) {
+                setupLevel3();
+                switchScreen('screen-level3');
+            } else if (lvl === 4) {
+                setupLevel4();
+                switchScreen('screen-quiz');
+            }
+        }
+
+        /* =========================================================
+           8. LEVEL 1 SETUP & LOGIC (KENALI TOKOH)
+           ========================================================= */
+        function setupLevel1() {
+            document.getElementById('quiz-level-badge').textContent = "LEVEL 1";
+            document.getElementById('quiz-title').textContent = "KENALI TOKOH";
+            document.getElementById('quiz-media-box').classList.remove('hidden');
+
+            const keys = Object.keys(WAYANG_CHARACTERS);
+            // Create 10 randomized items from characters
+            quizQuestionsPool = [];
+            for (let i = 0; i < 10; i++) {
+                const targetKey = keys[i % keys.length];
+                const charObj = WAYANG_CHARACTERS[targetKey];
+                
+                // Get 3 incorrect options
+                const wrongKeys = keys.filter(k => k !== targetKey);
+                shuffleArray(wrongKeys);
+                const chosenOptions = [targetKey, wrongKeys[0], wrongKeys[1], wrongKeys[2]];
+                shuffleArray(chosenOptions);
+
+                quizQuestionsPool.push({
+                    targetKey: targetKey,
+                    svg: charObj.svg,
+                    prompt: "Sapa jeneng paraga wayang iki?",
+                    correctName: charObj.name,
+                    options: chosenOptions.map(k => WAYANG_CHARACTERS[k].name)
+                });
+            }
+            shuffleArray(quizQuestionsPool);
+            renderQuizQuestion();
+        }
+
+        /* =========================================================
+           9. LEVEL 2 SETUP & LOGIC (TEBAK SIFAT)
+           ========================================================= */
+        function setupLevel2() {
+            document.getElementById('quiz-level-badge').textContent = "LEVEL 2";
+            document.getElementById('quiz-title').textContent = "TEBAK SIFAT";
+            document.getElementById('quiz-media-box').classList.add('hidden');
+
+            quizQuestionsPool = JSON.parse(JSON.stringify(LEVEL2_QUESTIONS));
+            shuffleArray(quizQuestionsPool);
+            quizQuestionsPool.forEach(q => {
+                q.correctName = WAYANG_CHARACTERS[q.correct].name;
+                q.options = q.options.map(k => WAYANG_CHARACTERS[k].name);
+            });
+
+            renderQuizQuestion();
+        }
+
+        /* =========================================================
+           10. LEVEL 4 SETUP & LOGIC (BOSS BATTLE)
+           ========================================================= */
+        function setupLevel4() {
+            document.getElementById('quiz-level-badge').textContent = "LEVEL 4";
+            document.getElementById('quiz-title').textContent = "⚔️ BOSS BATTLE";
+            document.getElementById('quiz-media-box').classList.add('hidden');
+
+            quizQuestionsPool = JSON.parse(JSON.stringify(BOSS_QUESTIONS));
+            quizQuestionsPool.forEach(q => {
+                q.correctName = q.correct;
+            });
+
+            renderQuizQuestion();
+        }
+
+        /* =========================================================
+           11. COMMON QUIZ RENDERER
+           ========================================================= */
+        function renderQuizQuestion() {
+            const p = players[currentPlayerIdx];
+            const currentQ = quizQuestionsPool[quizCurrentIndex];
+
+            // Update Header Stats
+            document.getElementById('quiz-progress-text').textContent = `Soal ${quizCurrentIndex + 1} / ${quizQuestionsPool.length}`;
+            document.getElementById('quiz-score-text').textContent = p.score;
+            document.getElementById('quiz-lives-text').textContent = p.lives;
+
+            // Prompt & Visual
+            document.getElementById('quiz-question-prompt').textContent = currentQ.prompt || currentQ.prompt;
+            
+            if (currentQ.svg) {
+                document.getElementById('quiz-svg-holder').innerHTML = currentQ.svg;
+            }
+
+            // Hide feedback
+            const fb = document.getElementById('quiz-feedback-box');
+            fb.className = 'hidden p-4 rounded-xl text-center font-extrabold text-lg transition';
+
+            // Options
+            const grid = document.getElementById('quiz-options-grid');
+            grid.innerHTML = '';
+
+            currentQ.options.forEach(optText => {
+                const btn = document.createElement('button');
+                btn.className = "py-4 px-5 bg-amber-950/80 hover:bg-amber-900 border-2 border-amber-500/40 rounded-xl text-amber-100 font-bold text-sm md:text-base text-center transition shadow-md hover:border-amber-400 active:scale-95 flex items-center justify-center";
+                btn.textContent = optText;
+                btn.onclick = () => handleAnswerSelect(optText, currentQ.correctName, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function handleAnswerSelect(selected, correct, buttonEl) {
+            const p = players[currentPlayerIdx];
+            const fb = document.getElementById('quiz-feedback-box');
+            fb.classList.remove('hidden');
+
+            const isCorrect = (selected.toLowerCase() === correct.toLowerCase());
+
+            if (isCorrect) {
+                playSound('correct');
+                const points = (currentLevel === 4) ? 20 : 10;
+                p.score += points;
+
+                fb.className = "p-4 rounded-xl text-center font-extrabold text-lg bg-green-900/90 border border-green-400 text-green-200 animate-bounce";
+                fb.textContent = `✅ BENER! (+${points} Poin)`;
+
+                buttonEl.className = "py-4 px-5 bg-green-700 border-2 border-green-300 rounded-xl text-white font-bold text-sm md:text-base text-center shadow-md";
+            } else {
+                playSound('wrong');
+                p.lives -= 1;
+
+                fb.className = "p-4 rounded-xl text-center font-extrabold text-lg bg-red-900/90 border border-red-400 text-red-200 animate-shake";
+                fb.textContent = `❌ DURUNG BENER! (-1 Nyawa)`;
+
+                buttonEl.className = "py-4 px-5 bg-red-800 border-2 border-red-400 rounded-xl text-white font-bold text-sm md:text-base text-center shadow-md";
+            }
+
+            // Update stats HUD
+            document.getElementById('quiz-score-text').textContent = p.score;
+            document.getElementById('quiz-lives-text').textContent = p.lives;
+
+            // Check game over
+            if (p.lives <= 0) {
+                setTimeout(() => {
+                    alert("❤️ Nyawa wis telas! Ayo jajal maneh saka Peta Petualangan.");
+                    p.lives = 5;
+                    switchScreen('screen-map');
+                }, 1000);
+                return;
+            }
+
+            // Advance
+            setTimeout(() => {
+                quizCurrentIndex++;
+                if (quizCurrentIndex < quizQuestionsPool.length) {
+                    renderQuizQuestion();
+                } else {
+                    completeLevel(currentLevel);
+                }
+            }, 1200);
+        }
+
+        /* =========================================================
+           12. LEVEL 3 LOGIC (PASANGKAN SIFAT)
+           ========================================================= */
+        function setupLevel3() {
+            const p = players[currentPlayerIdx];
+            document.getElementById('l3-score-text').textContent = p.score;
+            document.getElementById('l3-lives-text').textContent = p.lives;
+
+            selectedL3TokohKey = null;
+            l3MatchedCount = 0;
+
+            const selectedKeys = ['yudhistira', 'bima', 'arjuna', 'semar', 'gareng'];
+            const tokohContainer = document.getElementById('l3-tokoh-list');
+            const sifatContainer = document.getElementById('l3-sifat-list');
+
+            tokohContainer.innerHTML = '';
+            sifatContainer.innerHTML = '';
+
+            // Tokoh List
+            selectedKeys.forEach(key => {
+                const charObj = WAYANG_CHARACTERS[key];
+                const card = document.createElement('div');
+                card.id = `l3-tokoh-${key}`;
+                card.className = "p-3 bg-amber-950/80 border-2 border-amber-500/40 rounded-xl flex items-center gap-3 cursor-pointer hover:border-amber-300 transition";
+                card.onclick = () => selectL3Tokoh(key);
+                card.innerHTML = `
+                    <div class="w-10 h-10 rounded-lg bg-amber-900/50 p-1 border border-amber-500/30">
+                        ${charObj.svg}
+                    </div>
+                    <span class="font-bold text-amber-200 text-sm md:text-base">${charObj.name}</span>
+                `;
+                tokohContainer.appendChild(card);
+            });
+
+            // Sifat Target List (Shuffled)
+            const shuffledSifat = selectedKeys.map(k => ({
+                key: k,
+                sifat: WAYANG_CHARACTERS[k].sifat
+            }));
+            shuffleArray(shuffledSifat);
+
+            shuffledSifat.forEach(item => {
+                const card = document.createElement('div');
+                card.id = `l3-sifat-${item.key}`;
+                card.className = "p-3.5 bg-amber-950/80 border-2 border-amber-500/40 rounded-xl flex items-center justify-between cursor-pointer hover:border-amber-300 transition text-xs md:text-sm text-amber-100 font-semibold";
+                card.onclick = () => selectL3SifatTarget(item.key);
+                card.innerHTML = `
+                    <span>👉 ${item.sifat}</span>
+                    <span id="check-${item.key}" class="hidden text-green-400 font-bold text-base">✓</span>
+                `;
+                sifatContainer.appendChild(card);
+            });
+        }
+
+        function selectL3Tokoh(key) {
+            playSound('click');
+            // Remove active style from all
+            ['yudhistira', 'bima', 'arjuna', 'semar', 'gareng'].forEach(k => {
+                const el = document.getElementById(`l3-tokoh-${k}`);
+                if (el && !el.dataset.matched) {
+                    el.className = "p-3 bg-amber-950/80 border-2 border-amber-500/40 rounded-xl flex items-center gap-3 cursor-pointer hover:border-amber-300 transition";
+                }
+            });
+
+            selectedL3TokohKey = key;
+            const targetEl = document.getElementById(`l3-tokoh-${key}`);
+            if (targetEl && !targetEl.dataset.matched) {
+                targetEl.className = "p-3 bg-amber-600/40 border-2 border-yellow-300 rounded-xl flex items-center gap-3 cursor-pointer transition shadow-lg scale-102";
+            }
+        }
+
+        function selectL3SifatTarget(sifatKey) {
+            if (!selectedL3TokohKey) {
+                alert("⚠️ Pilih paraga wayang ing sisih kiwa dhisik!");
+                return;
+            }
+
+            const p = players[currentPlayerIdx];
+            const fb = document.getElementById('l3-feedback-box');
+            fb.classList.remove('hidden');
+
+            if (selectedL3TokohKey === sifatKey) {
+                playSound('correct');
+                p.score += 10;
+                l3MatchedCount++;
+
+                fb.className = "p-3 rounded-xl text-center font-bold text-base bg-green-900/90 border border-green-400 text-green-200 animate-bounce";
+                fb.textContent = "✅ PASANGAN BENER! (+10 Poin)";
+
+                // Mark Tokoh
+                const tEl = document.getElementById(`l3-tokoh-${selectedL3TokohKey}`);
+                tEl.dataset.matched = "true";
+                tEl.className = "p-3 bg-green-950/80 border-2 border-green-500 rounded-xl flex items-center gap-3 opacity-60 pointer-events-none";
+
+                // Mark Sifat
+                const sEl = document.getElementById(`l3-sifat-${sifatKey}`);
+                sEl.className = "p-3.5 bg-green-950/80 border-2 border-green-500 rounded-xl flex items-center justify-between text-xs md:text-sm text-green-200 font-semibold opacity-60 pointer-events-none";
+                document.getElementById(`check-${sifatKey}`).classList.remove('hidden');
+
+                selectedL3TokohKey = null;
+
+                document.getElementById('l3-score-text').textContent = p.score;
+
+                if (l3MatchedCount >= 5) {
+                    setTimeout(() => {
+                        completeLevel(3);
+                    }, 1200);
+                }
+            } else {
+                playSound('wrong');
+                p.lives -= 1;
+
+                fb.className = "p-3 rounded-xl text-center font-bold text-base bg-red-900/90 border border-red-400 text-red-200 animate-shake";
+                fb.textContent = "❌ DURUNG TREP! (-1 Nyawa)";
+
+                document.getElementById('l3-lives-text').textContent = p.lives;
+
+                if (p.lives <= 0) {
+                    setTimeout(() => {
+                        alert("❤️ Nyawa wis telas! Ayo baleni Level 3.");
+                        p.lives = 5;
+                        switchScreen('screen-map');
+                    }, 1000);
+                }
+            }
+        }
+
+        /* =========================================================
+           13. LEVEL COMPLETION & FLOW TRANSITIONS
+           ========================================================= */
+        function completeLevel(lvl) {
+            playSound('victory');
+            const p = players[currentPlayerIdx];
+
+            if (lvl < 4) {
+                p.unlockedLevel = Math.max(p.unlockedLevel, lvl + 1);
+
+                document.getElementById('summary-title').textContent = `🎉 LEVEL ${lvl} RAMPUNG!`;
+                document.getElementById('summary-desc').textContent = lvl === 1 
+                    ? "Kowe wis kasil ngenali paraga Pandhawa lan Punakawan."
+                    : lvl === 2 
+                    ? "Kowe wis luwih ngerti watak lan sifat para paraga."
+                    : "Kowe wis pinter masangake watak karo paraga sing trep!";
+
+                document.getElementById('summary-score').textContent = p.score;
+                document.getElementById('summary-lives').textContent = p.lives;
+
+                switchScreen('screen-summary');
+            } else {
+                // Completed Level 4 (Boss Battle)
+                p.completed = true;
+                p.gelar = "🏆 Pangerten Wayang Jawa";
+                saveScoreToLeaderboard(p);
+
+                if (gameMode === 'DUEL' && currentPlayerIdx === 0 && players.length > 1) {
+                    // Transition to Player 2
+                    alert(`🎉 ${players[0].name} wis ngrampungake kabeh level!\nSaiki giliran ${players[1].name}!`);
+                    currentPlayerIdx = 1;
+                    switchScreen('screen-map');
+                } else {
+                    showFinalResultScreen();
+                }
+            }
+        }
+
+        function nextLevelFromSummary() {
+            playSound('click');
+            switchScreen('screen-map');
+        }
+
+        function showFinalResultScreen() {
+            switchScreen('screen-final');
+
+            const singleCard = document.getElementById('final-single-card');
+            const duelCard = document.getElementById('final-duel-card');
+
+            if (gameMode === 'SOLO') {
+                singleCard.classList.remove('hidden');
+                duelCard.classList.add('hidden');
+
+                const p = players[0];
+                document.getElementById('final-player-name').textContent = p.name;
+                document.getElementById('final-player-score').textContent = p.score;
+                document.getElementById('final-player-lives').textContent = p.lives;
+            } else {
+                singleCard.classList.add('hidden');
+                duelCard.classList.remove('hidden');
+
+                const p1 = players[0];
+                const p2 = players[1];
+
+                document.getElementById('duel-p1-name').textContent = p1.name;
+                document.getElementById('duel-p1-score').textContent = `${p1.score} Pts`;
+
+                document.getElementById('duel-p2-name').textContent = p2.name;
+                document.getElementById('duel-p2-score').textContent = `${p2.score} Pts`;
+
+                const wBox = document.getElementById('duel-winner-box');
+                if (p1.score > p2.score) {
+                    wBox.textContent = `🏆 PEMENANG: ${p1.name}!`;
+                } else if (p2.score > p1.score) {
+                    wBox.textContent = `🏆 PEMENANG: ${p2.name}!`;
+                } else {
+                    wBox.textContent = `🤝 HASIL IMBANG (SERI)!`;
+                }
+            }
+        }
+
+        function restartGame() {
+            playSound('click');
+            switchScreen('screen-registrasi');
+        }
+
+        /* =========================================================
+           14. LOCAL STORAGE & LEADERBOARD
+           ========================================================= */
+        function saveScoreToLeaderboard(player) {
+            try {
+                let records = JSON.parse(localStorage.getItem('wayang_leaderboard') || '[]');
+                records.push({
+                    name: player.name,
+                    mode: gameMode,
+                    score: player.score,
+                    gelar: player.gelar,
+                    date: new Date().toLocaleDateString()
+                });
+                records.sort((a, b) => b.score - a.score);
+                records = records.slice(0, 10); // top 10
+                localStorage.setItem('wayang_leaderboard', JSON.stringify(records));
+            } catch (e) {
+                console.log("Localstorage error", e);
+            }
+        }
+
+        function renderLeaderboardTable() {
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = '';
+
+            let records = [];
+            try {
+                records = JSON.parse(localStorage.getItem('wayang_leaderboard') || '[]');
+            } catch (e) {}
+
+            if (records.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-amber-300/60 italic">Durung ana data papan skor. Ayo main dadi sing pisanan!</td></tr>`;
+                return;
+            }
+
+            records.forEach((rec, idx) => {
+                const rankBadge = idx === 0 ? "🥇 Juara 1" : idx === 1 ? "🥈 Juara 2" : idx === 2 ? "🥉 Juara 3" : `#${idx + 1}`;
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-amber-900/30 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-yellow-400">${rankBadge}</td>
+                    <td class="p-3 font-semibold">${escapeHTML(rec.name)}</td>
+                    <td class="p-3"><span class="text-[10px] bg-amber-900 px-2 py-0.5 rounded font-bold">${rec.mode}</span></td>
+                    <td class="p-3 font-black text-yellow-300">${rec.score}</td>
+                    <td class="p-3 text-xs text-amber-200">${rec.gelar}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* Helper Utility Functions */
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+    </script>
+</body>
+</html>
