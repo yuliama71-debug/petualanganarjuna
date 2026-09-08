@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="jv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Arjuna: Misi Nggolèki Sifat</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #1a0f2e;
+            color: #f8fafc;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        .font-heading {
+            font-family: 'Fredoka', cursive;
+        }
+
+        /* Javanese Batik Pattern Background */
+        .batik-bg {
+            background-color: #1e1338;
+            background-image: radial-gradient(#d97706 0.75px, transparent 0.75px), radial-gradient(#d97706 0.75px, #1e1338 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            background-opacity: 0.15;
+        }
+
+        /* Custom Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.8); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.4) rotate(180deg); opacity: 1; }
+            100% { transform: scale(1) rotate(360deg); opacity: 1; }
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .animate-glow {
+            animation: pulseGlow 2.5s infinite;
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        .animate-star {
+            animation: starPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(30, 20, 50, 0.85);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card-gold {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.2), rgba(180, 83, 9, 0.4));
+            border: 2px solid #f59e0b;
+        }
+
+        /* Interactive Card Buttons */
+        .btn-game {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-game:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-game:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        /* Canvas particles layer */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #110924;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d97706;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="batik-bg min-h-screen text-slate-100 flex flex-col justify-between selection:bg-amber-500 selection:text-slate-900">
+
+    <!-- Confetti Overlay -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Global Top Bar -->
+    <header id="globalHeader" class="w-full bg-slate-900/90 border-b border-amber-500/30 px-4 py-3 flex justify-between items-center sticky top-0 z-40 backdrop-blur-md hidden">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-400 font-bold text-xl font-heading">
+                🏹
+            </div>
+            <div>
+                <h1 class="font-heading text-amber-400 text-lg md:text-xl font-bold leading-tight">PETUALANGAN ARJUNA</h1>
+                <p id="topBarSubtitle" class="text-xs text-amber-200/70 hidden sm:block">Misi Nggolèki Sifat</p>
+            </div>
+        </div>
+
+        <div id="playerStatsBar" class="flex items-center space-x-3 md:space-x-6">
+            <div id="currentPlayerBadge" class="hidden md:flex items-center space-x-2 bg-purple-900/60 border border-purple-500/40 px-3 py-1 rounded-full text-xs text-purple-200 font-semibold">
+                <i class="fa-solid fa-user text-amber-400"></i>
+                <span id="headerPlayerName">Pemain</span>
+            </div>
+            
+            <div class="flex items-center space-x-1.5 bg-amber-950/70 border border-amber-500/40 px-3 py-1.5 rounded-full">
+                <span class="text-amber-400 text-base">⭐</span>
+                <span id="headerScore" class="font-heading font-bold text-amber-300 text-sm md:text-base">0</span>
+            </div>
+
+            <div class="flex items-center space-x-1 bg-red-950/70 border border-red-500/40 px-3 py-1.5 rounded-full">
+                <span class="text-red-400 text-base">❤️</span>
+                <span id="headerLives" class="font-heading font-bold text-red-300 text-sm md:text-base">5</span>
+            </div>
+
+            <button id="soundToggleBtn" onclick="toggleAudio()" class="w-9 h-9 rounded-full bg-slate-800 border border-slate-600 hover:border-amber-400 flex items-center justify-center text-amber-400 transition-all">
+                <i id="soundIcon" class="fa-solid fa-volume-high"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Application Container -->
+    <main id="appContainer" class="flex-grow flex items-center justify-center p-3 md:p-6 max-w-6xl mx-auto w-full">
+        <!-- Dynamic Views Will Be Rendered Here -->
+    </main>
+
+    <!-- Global Feedback Modal Overlay -->
+    <div id="feedbackModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div id="feedbackCard" class="glass-card max-w-md w-full rounded-2xl p-6 text-center border-4 transform transition-all duration-300 scale-95">
+            <div id="feedbackIcon" class="text-6xl mb-3 animate-star">✅</div>
+            <h3 id="feedbackTitle" class="font-heading text-2xl md:text-3xl font-bold mb-2">PANCEN BENER!</h3>
+            <p id="feedbackText" class="text-slate-200 text-base mb-6">Sifat iki pancen diduweni dening Yudhistira.</p>
+            <button id="feedbackBtn" onclick="closeFeedbackModal()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold font-heading text-lg rounded-xl shadow-lg btn-game">
+                LANJUT <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full bg-slate-950/80 border-t border-amber-900/40 py-3 text-center text-xs text-amber-200/50">
+        <p>🏹 Gim Edukasi Bahasa Jawa - Kelas 6 SD • "Sinau Wayang, Ngenali Watak, Dadi Petualang!"</p>
+    </footer>
+
+    <script>
+        /* SVGs Engine for Wayang Characters */
+        function getWayangSVG(id, width = 120, height = 120) {
+            const svgHeader = `<svg width="${width}" height="${height}" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-lg">`;
+            const svgFooter = `</svg>`;
+            
+            switch(id) {
+                case 'arjuna':
+                    return svgHeader + `
+                        <!-- Arjuna Vector -->
+                        <circle cx="100" cy="100" r="90" fill="#2e1065" stroke="#f59e0b" stroke-width="4"/>
+                        <!-- Aura/Crown -->
+                        <path d="M100 25 L112 55 L140 55 L118 72 L127 100 L100 83 L73 100 L82 72 L60 55 L88 55 Z" fill="#fbbf24"/>
+                        <!-- Head/Face -->
+                        <ellipse cx="100" cy="95" rx="30" ry="38" fill="#fde047"/>
+                        <!-- Gelung Minangkara Hair Crown -->
+                        <path d="M75 80 C75 50, 125 50, 125 80 C135 60, 125 35, 100 35 C75 35, 65 60, 75 80 Z" fill="#1e1b4b" stroke="#d97706" stroke-width="3"/>
+                        <!-- Eyes (Fine Alus Eyes) -->
+                        <path d="M85 92 Q93 88 98 92" stroke="#451a03" stroke-width="3" stroke-linecap="round" fill="none"/>
+                        <path Q102="88" d="M102 92 Q107 88 115 92" stroke="#451a03" stroke-width="3" stroke-linecap="round" fill="none"/>
+                        <!-- Nose & Gentle Smile -->
+                        <path d="M100 93 L98 103 L103 104" stroke="#78350f" stroke-width="2.5" fill="none"/>
+                        <path d="M92 112 Q100 118 108 112" stroke="#78350f" stroke-width="2.5" fill="none"/>
+                        <!-- Bow Weapon (Panah Pasopati) -->
+                        <path d="M140 50 Q160 100 140 150" stroke="#f59e0b" stroke-width="5" fill="none"/>
+                        <line x1="140" y1="50" x2="140" y2="150" stroke="#fef08a" stroke-width="1.5" stroke-dasharray="3,3"/>
+                        <path d="M80 105 L155 105 M150 100 L160 105 L150 110" stroke="#ef4444" stroke-width="3.5" fill="none"/>
+                        <!-- Shoulders/Armor -->
+                        <path d="M65 140 Q100 120 135 140 L145 185 L55 185 Z" fill="#0284c7" stroke="#f59e0b" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'yudhistira':
+                    return svgHeader + `
+                        <!-- Yudhistira Vector -->
+                        <circle cx="100" cy="100" r="90" fill="#064e3b" stroke="#34d399" stroke-width="4"/>
+                        <!-- Makuta Crown -->
+                        <path d="M70 75 Q100 20 130 75 Z" fill="#fbbf24" stroke="#d97706" stroke-width="3"/>
+                        <circle cx="100" cy="50" r="8" fill="#ef4444"/>
+                        <!-- Face -->
+                        <ellipse cx="100" cy="100" rx="32" ry="36" fill="#fef08a"/>
+                        <!-- Calm Gentle Eyes & Expression -->
+                        <path d="M82 96 Q90 92 95 96" stroke="#064e3b" stroke-width="3" fill="none"/>
+                        <path d="M105 96 Q110 92 118 96" stroke="#064e3b" stroke-width="3" fill="none"/>
+                        <path d="M93 115 Q100 119 107 115" stroke="#064e3b" stroke-width="2.5" fill="none"/>
+                        <!-- White Robe/Royal Outfit -->
+                        <path d="M60 145 Q100 125 140 145 L150 185 L50 185 Z" fill="#f8fafc" stroke="#f59e0b" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'bima':
+                    return svgHeader + `
+                        <!-- Bima Vector -->
+                        <circle cx="100" cy="100" r="90" fill="#7f1d1d" stroke="#f87171" stroke-width="4"/>
+                        <!-- Hair & Head Details -->
+                        <path d="M65 75 Q100 35 135 75 C145 110, 55 110, 65 75 Z" fill="#1e1b4b"/>
+                        <ellipse cx="100" cy="95" rx="38" ry="40" fill="#d97706"/>
+                        <!-- Red Powerful Eyes & Mustache -->
+                        <circle cx="85" cy="90" r="6" fill="#ef4444"/>
+                        <circle cx="115" cy="90" r="6" fill="#ef4444"/>
+                        <path d="M75 105 Q100 115 125 105 Q100 125 75 105 Z" fill="#1e1b4b"/>
+                        <!-- Poleng Checkered Pattern Garment -->
+                        <path d="M50 145 Q100 125 150 145 L160 185 L40 185 Z" fill="#1e293b" stroke="#f8fafc" stroke-width="4"/>
+                        <!-- Gadha Rujakpala Weapon -->
+                        <rect x="145" y="60" width="22" height="70" rx="10" fill="#fbbf24" stroke="#78350f" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'nakula':
+                    return svgHeader + `
+                        <!-- Nakula Vector -->
+                        <circle cx="100" cy="100" r="90" fill="#1e3a8a" stroke="#60a5fa" stroke-width="4"/>
+                        <path d="M75 75 Q100 30 125 75 Z" fill="#f59e0b"/>
+                        <ellipse cx="100" cy="98" rx="30" ry="35" fill="#fde047"/>
+                        <!-- Handsome eyes -->
+                        <path d="M84 94 Q90 90 96 94" stroke="#1e3a8a" stroke-width="3" fill="none"/>
+                        <path d="M104 94 Q110 90 116 94" stroke="#1e3a8a" stroke-width="3" fill="none"/>
+                        <path d="M92 113 Q100 118 108 113" stroke="#1e3a8a" stroke-width="2.5" fill="none"/>
+                        <!-- Outfit -->
+                        <path d="M60 140 Q100 125 140 140 L150 185 L50 185 Z" fill="#2563eb" stroke="#fbbf24" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'sadewa':
+                    return svgHeader + `
+                        <!-- Sadewa Vector -->
+                        <circle cx="100" cy="100" r="90" fill="#581c87" stroke="#c084fc" stroke-width="4"/>
+                        <path d="M75 75 Q100 30 125 75 Z" fill="#f59e0b"/>
+                        <ellipse cx="100" cy="98" rx="30" ry="35" fill="#fde047"/>
+                        <!-- Smart Eyes & Wisdom Scroll -->
+                        <path d="M84 94 Q90 90 96 94" stroke="#581c87" stroke-width="3" fill="none"/>
+                        <path d="M104 94 Q110 90 116 94" stroke="#581c87" stroke-width="3" fill="none"/>
+                        <path d="M92 113 Q100 118 108 113" stroke="#581c87" stroke-width="2.5" fill="none"/>
+                        <!-- Outfit -->
+                        <path d="M60 140 Q100 125 140 140 L150 185 L50 185 Z" fill="#7e22ce" stroke="#fbbf24" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'semar':
+                    return svgHeader + `
+                        <!-- Semar Vector -->
+                        <circle cx="100" cy="100" r="90" fill="#881337" stroke="#fda4af" stroke-width="4"/>
+                        <!-- Semar White Hair Crest (Kuncung) -->
+                        <path d="M90 40 C80 20, 110 20, 105 40 Z" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+                        <!-- Round Belly & Face -->
+                        <circle cx="100" cy="105" r="42" fill="#fef08a"/>
+                        <!-- Small smiling eyes & big belly laugh -->
+                        <path d="M80 95 Q90 88 95 95" stroke="#881337" stroke-width="3" fill="none"/>
+                        <path d="M105 95 Q110 88 120 95" stroke="#881337" stroke-width="3" fill="none"/>
+                        <circle cx="100" cy="105" r="5" fill="#ef4444"/>
+                        <path d="M85 118 Q100 130 115 118" stroke="#881337" stroke-width="3" fill="none"/>
+                        <!-- Sarong Parang Motif -->
+                        <path d="M55 145 Q100 130 145 145 L155 185 L45 185 Z" fill="#451a03" stroke="#f59e0b" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'gareng':
+                    return svgHeader + `
+                        <!-- Gareng Vector -->
+                        <circle cx="100" cy="100" r="90" fill="#713f12" stroke="#fde047" stroke-width="4"/>
+                        <!-- Round Nose & Funny Eyes -->
+                        <circle cx="100" cy="100" r="32" fill="#fed7aa"/>
+                        <circle cx="100" cy="98" r="12" fill="#ef4444"/> <!-- Big Round Nose -->
+                        <circle cx="82" cy="88" r="5" fill="#1e293b"/>
+                        <circle cx="118" cy="88" r="5" fill="#1e293b"/>
+                        <path d="M88 116 Q100 124 112 116" stroke="#713f12" stroke-width="3" fill="none"/>
+                        <!-- Simple Body -->
+                        <path d="M60 140 Q100 130 140 140 L150 185 L50 185 Z" fill="#ca8a04" stroke="#fef08a" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'petruk':
+                    return svgHeader + `
+                        <!-- Petruk Vector -->
+                        <circle cx="100" cy="100" r="90" fill="#14532d" stroke="#86efac" stroke-width="4"/>
+                        <!-- Tall Oval Head & Long Nose -->
+                        <ellipse cx="100" cy="95" rx="28" ry="42" fill="#fef08a"/>
+                        <!-- Long Iconic Nose -->
+                        <path d="M100 85 L145 98 L100 102 Z" fill="#fde047" stroke="#ca8a04" stroke-width="2"/>
+                        <!-- Cheerful Eyes & Wide Smile -->
+                        <path d="M78 88 Q86 82 92 88" stroke="#14532d" stroke-width="3" fill="none"/>
+                        <path d="M82 115 Q95 128 110 115" stroke="#14532d" stroke-width="3.5" fill="none"/>
+                        <!-- Outfit -->
+                        <path d="M65 145 Q100 135 135 145 L145 185 L55 185 Z" fill="#166534" stroke="#86efac" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'bagong':
+                    return svgHeader + `
+                        <!-- Bagong Vector -->
+                        <circle cx="100" cy="100" r="90" fill="#312e81" stroke="#a5b4fc" stroke-width="4"/>
+                        <!-- Very Round Head & Wide Eyes -->
+                        <circle cx="100" cy="100" r="38" fill="#fed7aa"/>
+                        <!-- Big Round Eyes -->
+                        <circle cx="82" cy="90" r="9" fill="#f8fafc" stroke="#1e1b4b" stroke-width="2"/>
+                        <circle cx="82" cy="90" r="4" fill="#1e1b4b"/>
+                        <circle cx="118" cy="90" r="9" fill="#f8fafc" stroke="#1e1b4b" stroke-width="2"/>
+                        <circle cx="118" cy="90" r="4" fill="#1e1b4b"/>
+                        <!-- Wide Mouth -->
+                        <ellipse cx="100" cy="116" rx="16" ry="10" fill="#dc2626"/>
+                        <!-- Outfit -->
+                        <path d="M55 145 Q100 130 145 145 L155 185 L45 185 Z" fill="#4338ca" stroke="#c7d2fe" stroke-width="3"/>
+                    ` + svgFooter;
+
+                case 'gunungan':
+                    return svgHeader + `
+                        <!-- Gunungan Wayang Artwork -->
+                        <path d="M100 15 C40 80, 20 150, 20 185 L180 185 C180 150, 160 80, 100 15 Z" fill="#b45309" stroke="#f59e0b" stroke-width="5"/>
+                        <path d="M100 25 C50 85, 32 145, 32 178 L168 178 C168 145, 150 85, 100 25 Z" fill="#78350f" stroke="#fbbf24" stroke-width="2"/>
+                        <!-- Tree of Life Trunk & Branches -->
+                        <rect x="94" y="90" width="12" height="88" fill="#f59e0b"/>
+                        <path d="M100 110 Q70 90 45 115 M100 130 Q60 110 40 140" stroke="#fef08a" stroke-width="3" fill="none"/>
+                        <path d="M100 110 Q130 90 155 115 M100 130 Q140 110 160 140" stroke="#fef08a" stroke-width="3" fill="none"/>
+                        <!-- Gate of Heaven -->
+                        <path d="M75 180 L75 145 Q100 130 125 145 L125 180 Z" fill="#fef08a" stroke="#d97706" stroke-width="2"/>
+                    ` + svgFooter;
+
+                default:
+                    return svgHeader + `<circle cx="100" cy="100" r="80" fill="#d97706"/><text x="100" y="105" text-anchor="middle" fill="#fff" font-size="24">WAYANG</text>` + svgFooter;
+            }
+        }
+    </script>
+
+    <script>
+        /* ========================================================
+           DATASETS: CHARACTERS & TRAITS
+           ======================================================== */
+        const CHARACTERS = {
+            yudhistira: {
+                id: 'yudhistira',
+                name: 'Yudhistira',
+                group: 'Pandhawa',
+                title: 'Prabu Puntadewa',
+                traits: ['jujur', 'sabar', 'adil', 'bijaksana'],
+                desc: 'Tua dhewe ing Pandhawa, ora tau goroh, sabar banget, lan adil ing tumindak.'
+            },
+            bima: {
+                id: 'bima',
+                name: 'Bima',
+                group: 'Pandhawa',
+                title: 'Werkudara',
+                traits: ['kuat', 'tegas', 'berani'],
+                desc: 'Dhuwur tur gagah, duwe kuku Pancanaka, seneng tetulung lan jujur.'
+            },
+            arjuna: {
+                id: 'arjuna',
+                name: 'Arjuna',
+                group: 'Pandhawa',
+                title: 'Janaka',
+                traits: ['terampil', 'cerdas', 'alus', 'lembut'],
+                desc: 'Pinter manah nganggo jemparing Pasopati, wajahe nggantheng lan watake alus.'
+            },
+            nakula: {
+                id: 'nakula',
+                name: 'Nakula',
+                group: 'Pandhawa',
+                title: 'Pinten',
+                traits: ['baik', 'sopan', 'teliti'],
+                desc: 'Kembarane Sadewa, pinter ngrumat jaran, sopan tur seneng tetulung.'
+            },
+            sadewa: {
+                id: 'sadewa',
+                name: 'Sadewa',
+                group: 'Pandhawa',
+                title: 'Tangsen',
+                traits: ['cerdas', 'bijaksana', 'teliti'],
+                desc: 'Kembarane Nakula, pinter babagan ilmu astronomi lan sejarah.'
+            },
+            semar: {
+                id: 'semar',
+                name: 'Semar',
+                group: 'Punakawan',
+                title: 'Kyai Lurah Semar',
+                traits: ['bijaksana', 'pitutur', 'ngemong'],
+                desc: 'Bapake Punakawan, wicaksana banget, seneng menehi pitutur becik.'
+            },
+            gareng: {
+                id: 'gareng',
+                name: 'Gareng',
+                group: 'Punakawan',
+                title: 'Nala Gareng',
+                traits: ['lucu', 'sederhana', 'rendah hati'],
+                desc: 'Anak pambayun Semar, sikile pincang, mripate kero, nanging jujur lan rendah hati.'
+            },
+            petruk: {
+                id: 'petruk',
+                name: 'Petruk',
+                group: 'Punakawan',
+                title: 'Dawala',
+                traits: ['lucu', 'pandai berbicara', 'resep'],
+                desc: 'Irunge dawa banget, dhuwur, pinter guneman lan gawe guyu.'
+            },
+            bagong: {
+                id: 'bagong',
+                name: 'Bagong',
+                group: 'Punakawan',
+                title: 'Bagong',
+                traits: ['lucu', 'polos', 'apa adanya'],
+                desc: 'Anak pembungsu Semar, awake lemu, mripate amba, gembul lan polos.'
+            }
+        };
+
+        /* Level 2 Questions Database */
+        const LEVEL2_QUESTIONS_BANK = [
+            {
+                question: "Paraga sing dikenal paling sabar, jujur, lan seneng tumindak adil yaiku...",
+                correct: "yudhistira",
+                options: ["bima", "yudhistira", "gareng", "petruk"]
+            },
+            {
+                question: "Paraga sing duwe awak gagah, kuat, tegas, lan kendel (berani) yaiku...",
+                correct: "bima",
+                options: ["bima", "arjuna", "semar", "sadewa"]
+            },
+            {
+                question: "Paraga sing terampil manah, cerdas, lan watake alus/lembut yaiku...",
+                correct: "arjuna",
+                options: ["nakula", "bagong", "arjuna", "yudhistira"]
+            },
+            {
+                question: "Kembarane Sadewa sing duwe watak becik, sopan, lan teliti yaiku...",
+                correct: "nakula",
+                options: ["nakula", "bima", "gareng", "semar"]
+            },
+            {
+                question: "Paraga kembar Pandhawa sing pinter, cerdas, lan bijaksana yaiku...",
+                correct: "sadewa",
+                options: ["petruk", "bagong", "sadewa", "arjuna"]
+            },
+            {
+                question: "Bapake Punakawan sing wicaksana lan seneng ngemong para satria yaiku...",
+                correct: "semar",
+                options: ["semar", "gareng", "yudhistira", "bima"]
+            },
+            {
+                question: "Punakawan sing awake cilik, sikile pincang, lan watake rendah hati yaiku...",
+                correct: "gareng",
+                options: ["gareng", "petruk", "bagong", "nakula"]
+            },
+            {
+                question: "Punakawan sing irunge dawa, seneng banyol (lucu), lan pinter guneman yaiku...",
+                correct: "petruk",
+                options: ["petruk", "semar", "arjuna", "sadewa"]
+            },
+            {
+                question: "Punakawan sing mripate amba, awake lemu, lan watake polos apa anane yaiku...",
+                correct: "bagong",
+                options: ["bagong", "gareng", "bima", "yudhistira"]
+            },
+            {
+                question: "Paraga Pandhawa sing ora tau goroh (kallmausada) lan jujur banget yaiku...",
+                correct: "yudhistira",
+                options: ["yudhistira", "petruk", "bagong", "nakula"]
+            }
+        ];
+
+        /* Boss Battle Level 4 Questions */
+        const BOSS_QUESTIONS_BANK = [
+            {
+                question: "Sapa wae sing klebu ing kelompok paraga PANDHAWA?",
+                options: [
+                    "Yudhistira, Bima, Arjuna, Nakula, Sadewa",
+                    "Semar, Gareng, Petruk, Bagong",
+                    "Arjuna, Semar, Bima, Petruk",
+                    "Yudhistira, Karna, Duryodhana, Bima"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Sapa wae paraga sing klebu kelompok PUNAKAWAN?",
+                options: [
+                    "Nakula, Sadewa, Gareng, Bagong",
+                    "Semar, Gareng, Petruk, Bagong",
+                    "Yudhistira, Bima, Arjuna",
+                    "Prabu Puntadewa, Werkudara, Janaka"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "Karakter utami ing gim iki sing duwe senjata jemparing Pasopati yaiku...",
+                options: ["Bima", "Semar", "Arjuna", "Gareng"],
+                correctIndex: 2
+            },
+            {
+                question: "Nilai karakter becik saka paraga Semar sing kudu ditiru yaiku...",
+                options: [
+                    "Seneng tukaran karo kanca",
+                    "Bijaksana lan seneng menehi pitutur becik",
+                    "Gampang nesu yen dikandhani",
+                    "Sombong amarga pinter"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "Watak jujur lan adil saka Prabu Yudhistira bisa ditrapake ing sekolah kanthi cara...",
+                options: [
+                    "Nyontek nalika ulangan",
+                    "Ora gelem nuduhake salah marang kanca",
+                    "Jujur nalika nggarap tugas lan adil karo kanca",
+                    "Milih-milih kanca nalika dadi ketua kelas"
+                ],
+                correctIndex: 2
+            }
+        ];
+    </script>
+
+    <script>
+        /* ========================================================
+           SOUND ENGINE (Web Audio API - Synthesized SFX)
+           ======================================================== */
+        let audioCtx = null;
+        let soundMuted = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+        }
+
+        function toggleAudio() {
+            soundMuted = !soundMuted;
+            const icon = document.getElementById('soundIcon');
+            if (icon) {
+                icon.className = soundMuted ? "fa-solid fa-volume-xmark text-red-400" : "fa-solid fa-volume-high text-amber-400";
+            }
+        }
+
+        function playSound(type) {
+            if (soundMuted) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'correct') {
+                // Happy chord arpeggio
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.type = 'triangle';
+                    o.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    g.gain.setValueAtTime(0.2, now + idx * 0.08);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+                    o.start(now + idx * 0.08);
+                    o.stop(now + idx * 0.08 + 0.25);
+                });
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.linearRampToValueAtTime(130, now + 0.3);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'levelup') {
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.type = 'sine';
+                    o.frequency.setValueAtTime(freq, now + idx * 0.1);
+                    g.gain.setValueAtTime(0.2, now + idx * 0.1);
+                    g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.1 + 0.3);
+                    o.start(now + idx * 0.1);
+                    o.stop(now + idx * 0.1 + 0.3);
+                });
+            } else if (type === 'victory') {
+                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+                notes.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.type = 'triangle';
+                    o.frequency.setValueAtTime(freq, now + idx * 0.12);
+                    g.gain.setValueAtTime(0.25, now + idx * 0.12);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.4);
+                    o.start(now + idx * 0.12);
+                    o.stop(now + idx * 0.12 + 0.4);
+                });
+            }
+        }
+    </script>
+
+    <script>
+        /* ========================================================
+           STATE MANAGEMENT & APP ENGINE
+           ======================================================== */
+        let gameState = {
+            mode: 'SOLO', // 'SOLO' or 'DUEL'
+            currentPlayerIndex: 1, // 1 or 2
+            players: {
+                1: { name: 'Petualang 1', score: 0, lives: 5, unlockedLevel: 1 },
+                2: { name: 'Petualang 2', score: 0, lives: 5, unlockedLevel: 1 }
+            },
+            currentLevel: 1,
+            level1Questions: [],
+            level1Index: 0,
+            level2Questions: [],
+            level2Index: 0,
+            level3Pairs: [],
+            level3SelectedChar: null,
+            level3MatchedCount: 0,
+            bossIndex: 0
+        };
+
+        // Initialize App on DOM Load
+        window.onload = function() {
+            renderLoadingScreen();
+        };
+
+        function getCurrentPlayer() {
+            return gameState.players[gameState.currentPlayerIndex];
+        }
+
+        function updateHeaderUI() {
+            const header = document.getElementById('globalHeader');
+            const player = getCurrentPlayer();
+            if (!header) return;
+
+            document.getElementById('headerScore').innerText = player.score;
+            document.getElementById('headerLives').innerText = player.lives;
+            document.getElementById('headerPlayerName').innerText = player.name;
+
+            const playerBadge = document.getElementById('currentPlayerBadge');
+            if (gameState.mode === 'DUEL') {
+                playerBadge.classList.remove('hidden');
+                playerBadge.innerHTML = `<i class="fa-solid fa-users text-amber-400 mr-1"></i> P${gameState.currentPlayerIndex}: ${player.name}`;
+            } else {
+                playerBadge.classList.add('hidden');
+            }
+        }
+
+        function showHeader(show = true) {
+            const header = document.getElementById('globalHeader');
+            if (header) {
+                if (show) header.classList.remove('hidden');
+                else header.classList.add('hidden');
+            }
+        }
+
+        /* Confetti Effect for Victory */
+        function triggerConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#f59e0b', '#ef4444', '#10b981', '#3b82f6', '#8b5cf6', '#fef08a'];
+
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedY: Math.random() * 3 + 2,
+                    speedX: Math.random() * 2 - 1,
+                    rotation: Math.random() * 360
+                });
+            }
+
+            let animationFrame;
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += 2;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                    ctx.restore();
+                });
+
+                if (particles.some(p => p.y < canvas.height)) {
+                    animationFrame = requestAnimationFrame(render);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            render();
+        }
+
+        /* Modal Dialog Controller */
+        let modalCallback = null;
+        function showFeedbackModal(isCorrect, title, message, nextCallback) {
+            playSound(isCorrect ? 'correct' : 'wrong');
+            const modal = document.getElementById('feedbackModal');
+            const card = document.getElementById('feedbackCard');
+            const icon = document.getElementById('feedbackIcon');
+            const titleEl = document.getElementById('feedbackTitle');
+            const textEl = document.getElementById('feedbackText');
+
+            modalCallback = nextCallback;
+
+            if (isCorrect) {
+                card.className = "glass-card max-w-md w-full rounded-2xl p-6 text-center border-4 border-emerald-500 transform transition-all duration-300 scale-100 animate-star";
+                icon.innerText = "✅";
+                titleEl.className = "font-heading text-2xl md:text-3xl font-bold mb-2 text-emerald-400";
+            } else {
+                card.className = "glass-card max-w-md w-full rounded-2xl p-6 text-center border-4 border-red-500 transform transition-all duration-300 scale-100 animate-shake";
+                icon.innerText = "❌";
+                titleEl.className = "font-heading text-2xl md:text-3xl font-bold mb-2 text-red-400";
+            }
+
+            titleEl.innerText = title;
+            textEl.innerText = message;
+            modal.classList.remove('hidden');
+        }
+
+        function closeFeedbackModal() {
+            playSound('click');
+            document.getElementById('feedbackModal').classList.add('hidden');
+            if (modalCallback) {
+                modalCallback();
+                modalCallback = null;
+            }
+        }
+    </script>
+
+    <script>
+        /* ========================================================
+           VIEW C: LOADING SCREEN
+           ======================================================== */
+        function renderLoadingScreen() {
+            showHeader(false);
+            const app = document.getElementById('appContainer');
+            app.innerHTML = `
+                <div class="flex flex-col items-center justify-center text-center p-6 max-w-lg w-full">
+                    <div class="w-44 h-44 mb-6 animate-float">
+                        ${getWayangSVG('arjuna', 176, 176)}
+                    </div>
+                    <h1 class="font-heading text-3xl md:text-4xl font-extrabold text-amber-400 tracking-wide mb-1">
+                        🏹 PETUALANGAN ARJUNA
+                    </h1>
+                    <p class="text-amber-200/80 font-medium text-lg mb-8">“MISI NGGOLÈKI SIFAT”</p>
+                    
+                    <div class="w-full bg-slate-900/80 border border-amber-500/30 rounded-full h-5 p-1 mb-3">
+                        <div id="loadingProgressBar" class="bg-gradient-to-r from-amber-500 to-yellow-300 h-full rounded-full transition-all duration-300 w-0"></div>
+                    </div>
+                    <p id="loadingText" class="text-xs text-amber-300/70 animate-pulse font-mono">Nyiyapake petualangan... 0%</p>
+                </div>
+            `;
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 15) + 10;
+                if (progress > 100) progress = 100;
+                
+                const bar = document.getElementById('loadingProgressBar');
+                const text = document.getElementById('loadingText');
+                if (bar && text) {
+                    bar.style.width = `${progress}%`;
+                    text.innerText = `Nyiyapake petualangan... ${progress}%`;
+                }
+
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        renderHomeScreen();
+                    }, 400);
+                }
+            }, 180);
+        }
+
+        /* ========================================================
+           VIEW D: HOME PAGE (BERANDA)
+           ======================================================== */
+        function renderHomeScreen() {
+            showHeader(false);
+            const app = document.getElementById('appContainer');
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-6 md:p-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center border-amber-500/40">
+                    <!-- Left Column: Character Visual & Branding -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="relative mb-4">
+                            <div class="absolute inset-0 bg-amber-500/20 rounded-full blur-2xl animate-pulse"></div>
+                            <div class="w-52 h-52 md:w-64 md:h-64 relative animate-float">
+                                ${getWayangSVG('arjuna', '100%', '100%')}
+                            </div>
+                        </div>
+                        <span class="px-4 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-2">
+                            Gim Edukasi Bahasa Jawa SD
+                        </span>
+                        <h1 class="font-heading text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500 mb-2">
+                            PETUALANGAN ARJUNA
+                        </h1>
+                        <p class="text-xl font-bold text-amber-200 mb-2">Misi Nggolèki Sifat</p>
+                        <p class="text-xs md:text-sm text-slate-300 italic max-w-sm">
+                            “Sinau Wayang, Ngenali Watak, Dadi Petualang!”
+                        </p>
+                    </div>
+
+                    <!-- Right Column: Navigation Menu -->
+                    <div class="flex flex-col space-y-4">
+                        <button onclick="playSound('click'); renderRegistrationScreen();" class="w-full py-4 px-6 bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-extrabold font-heading text-xl rounded-2xl shadow-xl border-2 border-amber-300 flex items-center justify-center space-x-3 btn-game animate-glow">
+                            <span class="text-2xl">🏹</span>
+                            <span>MULAI PETUALANGAN</span>
+                        </button>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <button onclick="playSound('click'); renderTujuanScreen();" class="p-3.5 bg-slate-800/80 hover:bg-slate-700/80 border border-amber-500/30 rounded-xl flex items-center space-x-3 text-amber-300 font-semibold btn-game">
+                                <span class="text-xl">📚</span>
+                                <span class="text-sm">TUJUAN PEMBELAJARAN</span>
+                            </button>
+
+                            <button onclick="playSound('click'); renderPetunjukScreen();" class="p-3.5 bg-slate-800/80 hover:bg-slate-700/80 border border-amber-500/30 rounded-xl flex items-center space-x-3 text-amber-300 font-semibold btn-game">
+                                <span class="text-xl">🎮</span>
+                                <span class="text-sm">PETUNJUK GIM</span>
+                            </button>
+
+                            <button onclick="playSound('click'); renderRegistrationScreen();" class="p-3.5 bg-slate-800/80 hover:bg-slate-700/80 border border-amber-500/30 rounded-xl flex items-center space-x-3 text-amber-300 font-semibold btn-game">
+                                <span class="text-xl">👤</span>
+                                <span class="text-sm">REGISTRASI</span>
+                            </button>
+
+                            <button onclick="playSound('click'); renderLeaderboardScreen();" class="p-3.5 bg-slate-800/80 hover:bg-slate-700/80 border border-amber-500/30 rounded-xl flex items-center space-x-3 text-amber-300 font-semibold btn-game">
+                                <span class="text-xl">🏆</span>
+                                <span class="text-sm">PAPAN SKOR</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+
+    <script>
+        /* ========================================================
+           VIEW E: TUJUAN PEMBELAJARAN
+           ======================================================== */
+        function renderTujuanScreen() {
+            showHeader(false);
+            const app = document.getElementById('appContainer');
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-6 md:p-8 w-full max-w-3xl border-amber-500/40">
+                    <div class="flex items-center space-x-3 mb-6 border-b border-amber-500/30 pb-4">
+                        <span class="text-3xl">📚</span>
+                        <div>
+                            <h2 class="font-heading text-2xl md:text-3xl font-bold text-amber-400">TUJUAN PEMBELAJARAN</h2>
+                            <p class="text-xs text-amber-200/70">Materi Tokoh & Sifat Wayang Jawa Kelas 6 SD</p>
+                        </div>
+                    </div>
+
+                    <p class="text-amber-200 font-semibold text-base mb-4">Kanthi dolanan iki, siswa diajab bisa:</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3 bg-purple-950/40 border border-purple-500/30 p-3 rounded-xl">
+                                <span class="text-amber-400 text-lg">1.</span>
+                                <p class="text-sm text-slate-200">Ngenali tokoh Pandhawa lan Punakawan kanthi cetha.</p>
+                            </div>
+                            <div class="flex items-start space-x-3 bg-purple-950/40 border border-purple-500/30 p-3 rounded-xl">
+                                <span class="text-amber-400 text-lg">2.</span>
+                                <p class="text-sm text-slate-200">Nyebutake jeneng-jeneng paraga wayang lan julukane.</p>
+                            </div>
+                            <div class="flex items-start space-x-3 bg-purple-950/40 border border-purple-500/30 p-3 rounded-xl">
+                                <span class="text-amber-400 text-lg">3.</span>
+                                <p class="text-sm text-slate-200">Ngenali sifat utawa watak saben paraga wayang.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3 bg-purple-950/40 border border-purple-500/30 p-3 rounded-xl">
+                                <span class="text-amber-400 text-lg">4.</span>
+                                <p class="text-sm text-slate-200">Masangake sifat karo paraga sing trep lan bener.</p>
+                            </div>
+                            <div class="flex items-start space-x-3 bg-purple-950/40 border border-purple-500/30 p-3 rounded-xl">
+                                <span class="text-amber-400 text-lg">5.</span>
+                                <p class="text-sm text-slate-200">Njupuk nilai-nilai karakter luhur saka cerita wayang kanggo urip padintenan.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <button onclick="playSound('click'); renderHomeScreen();" class="py-3 px-6 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl border border-amber-500/30 btn-game flex items-center space-x-2">
+                            <span>⬅️ KEMBALI</span>
+                        </button>
+                        <button onclick="playSound('click'); renderRegistrationScreen();" class="py-3 px-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold font-heading rounded-xl btn-game">
+                            <span>MULAI PETUALANGAN 🏹</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ========================================================
+           VIEW F: PETUNJUK GIM
+           ======================================================== */
+        function renderPetunjukScreen() {
+            showHeader(false);
+            const app = document.getElementById('appContainer');
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-6 md:p-8 w-full max-w-3xl border-amber-500/40">
+                    <div class="flex items-center space-x-3 mb-6 border-b border-amber-500/30 pb-4">
+                        <span class="text-3xl">🎮</span>
+                        <div>
+                            <h2 class="font-heading text-2xl md:text-3xl font-bold text-amber-400">PETUNJUK GIM</h2>
+                            <p class="text-xs text-amber-200/70">Aturan & Cara Dolanan Petualangan Arjuna</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-slate-900/60 p-4 rounded-2xl border border-amber-500/20 space-y-2">
+                            <h3 class="font-heading text-amber-300 font-bold text-base mb-2">📌 Cara Dolanan:</h3>
+                            <ul class="text-xs md:text-sm space-y-2 text-slate-300">
+                                <li class="flex items-center space-x-2"><span>1.</span> <span>Pilih mode <b>SOLO</b> utawa <b>DUEL</b>.</span></li>
+                                <li class="flex items-center space-x-2"><span>2.</span> <span>Ketik jeneng pemain kanthi lengkap.</span></li>
+                                <li class="flex items-center space-x-2"><span>3.</span> <span>Rampungake Level 1 nganti Level 4.</span></li>
+                                <li class="flex items-center space-x-2"><span>4.</span> <span>Selesaikan Boss Battle kanggo entuk gelar!</span></li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-amber-950/40 p-4 rounded-2xl border border-amber-500/30 space-y-3">
+                            <h3 class="font-heading text-amber-300 font-bold text-base">⭐ Sistem Poin & Nyawa:</h3>
+                            <div class="space-y-2 text-xs md:text-sm">
+                                <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-lg">
+                                    <span>❤️ Nyawa Awal</span>
+                                    <span class="font-bold text-red-400">5 Nyawa</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-lg">
+                                    <span>⭐ Jawaban Benar (Level 1-3)</span>
+                                    <span class="font-bold text-emerald-400">+10 Poin</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-lg">
+                                    <span>❌ Jawaban Salah</span>
+                                    <span class="font-bold text-red-400">-1 Nyawa</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-900/80 p-2 rounded-lg">
+                                    <span>⚔️ Boss Battle (Level 4)</span>
+                                    <span class="font-bold text-amber-300">+20 Poin / Soal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-purple-950/50 rounded-2xl border border-purple-500/40 mb-6 text-center">
+                        <p class="text-amber-300 font-bold text-sm">🏆 Gelar Utama: “PANGERTEN WAYANG JAWA”</p>
+                        <p class="text-xs text-slate-300 mt-1">Siswa sing kasil ngrampungake kabeh level bakal entuk piala lan gelar pakurmatan!</p>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <button onclick="playSound('click'); renderHomeScreen();" class="py-3 px-6 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl border border-amber-500/30 btn-game">
+                            ⬅️ KEMBALI KE BERANDA
+                        </button>
+                        <button onclick="playSound('click'); renderRegistrationScreen();" class="py-3 px-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold font-heading rounded-xl btn-game">
+                            SIAP DOLANAN 🏹
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ========================================================
+           VIEW G: REGISTRASI
+           ======================================================== */
+        function renderRegistrationScreen() {
+            showHeader(false);
+            const app = document.getElementById('appContainer');
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-6 md:p-10 w-full max-w-xl border-amber-500/40 text-center">
+                    <span class="text-4xl mb-2 inline-block animate-float">🏹</span>
+                    <h2 class="font-heading text-2xl md:text-3xl font-extrabold text-amber-400 mb-1">
+                        SIAP MIWITI PETUALANGAN?
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-300 mb-6">Pilih mode dolanan lan ketik jenengmu!</p>
+
+                    <!-- Mode Toggle Buttons -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <button id="modeSoloBtn" onclick="selectGameMode('SOLO')" class="p-4 rounded-2xl border-2 transition-all text-center flex flex-col items-center justify-center space-y-1 ${gameState.mode === 'SOLO' ? 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-lg' : 'bg-slate-900/60 border-slate-700 text-slate-400 hover:border-amber-500/50'}">
+                            <span class="text-3xl">🎮</span>
+                            <span class="font-heading font-bold text-lg">SOLO</span>
+                            <span class="text-[10px] text-slate-300">Main dhewe lan tantang kemampuanmu!</span>
+                        </button>
+
+                        <button id="modeDuelBtn" onclick="selectGameMode('DUEL')" class="p-4 rounded-2xl border-2 transition-all text-center flex flex-col items-center justify-center space-y-1 ${gameState.mode === 'DUEL' ? 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-lg' : 'bg-slate-900/60 border-slate-700 text-slate-400 hover:border-amber-500/50'}">
+                            <span class="text-3xl">⚔️</span>
+                            <span class="font-heading font-bold text-lg">DUEL</span>
+                            <span class="text-[10px] text-slate-300">Main karo kanca lan bandhingake skor!</span>
+                        </button>
+                    </div>
+
+                    <!-- Input Form -->
+                    <form id="regForm" onsubmit="handleStartGame(event)" class="space-y-4 text-left">
+                        <div id="player1InputGroup">
+                            <label class="block text-xs font-semibold text-amber-300 mb-1 uppercase tracking-wider">
+                                ${gameState.mode === 'DUEL' ? 'Nama Pemain 1:' : 'Nama Pemain:'}
+                            </label>
+                            <input type="text" id="p1NameInput" placeholder="Ketik jenengmu ing kene..." maxlength="20" required class="w-full px-4 py-3 bg-slate-900/90 border border-amber-500/40 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400 font-semibold text-base">
+                        </div>
+
+                        <div id="player2InputGroup" class="${gameState.mode === 'DUEL' ? 'block' : 'hidden'}">
+                            <label class="block text-xs font-semibold text-amber-300 mb-1 uppercase tracking-wider">
+                                Nama Pemain 2:
+                            </label>
+                            <input type="text" id="p2NameInput" placeholder="Ketik jeneng kancamu..." maxlength="20" ${gameState.mode === 'DUEL' ? 'required' : ''} class="w-full px-4 py-3 bg-slate-900/90 border border-amber-500/40 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400 font-semibold text-base">
+                        </div>
+
+                        <p id="validationMsg" class="text-xs text-red-400 font-semibold hidden text-center">⚠️ Jeneng ora kena kosong!</p>
+
+                        <div class="pt-4 flex items-center justify-between space-x-3">
+                            <button type="button" onclick="playSound('click'); renderHomeScreen();" class="py-3.5 px-5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl border border-amber-500/30 btn-game">
+                                ⬅️ BERANDA
+                            </button>
+                            <button type="submit" class="flex-grow py-3.5 px-6 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-extrabold font-heading text-lg rounded-xl shadow-lg btn-game">
+                                MULAI BERMAIN 🏹
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+
+            // Restore previously entered names if available
+            document.getElementById('p1NameInput').value = gameState.players[1].name !== 'Petualang 1' ? gameState.players[1].name : '';
+            if (gameState.mode === 'DUEL') {
+                document.getElementById('p2NameInput').value = gameState.players[2].name !== 'Petualang 2' ? gameState.players[2].name : '';
+            }
+        }
+
+        function selectGameMode(mode) {
+            playSound('click');
+            gameState.mode = mode;
+            renderRegistrationScreen();
+        }
+
+        function handleStartGame(e) {
+            e.preventDefault();
+            playSound('click');
+
+            const p1Name = document.getElementById('p1NameInput').value.trim();
+            const p2Name = document.getElementById('p2NameInput') ? document.getElementById('p2NameInput').value.trim() : '';
+
+            if (!p1Name || (gameState.mode === 'DUEL' && !p2Name)) {
+                document.getElementById('validationMsg').classList.remove('hidden');
+                return;
+            }
+
+            // Reset game state for fresh run
+            gameState.currentPlayerIndex = 1;
+            gameState.players[1] = { name: p1Name, score: 0, lives: 5, unlockedLevel: 1 };
+            if (gameState.mode === 'DUEL') {
+                gameState.players[2] = { name: p2Name, score: 0, lives: 5, unlockedLevel: 1 };
+            }
+
+            renderMapScreen();
+        }
+    </script>
+
+    <script>
+        /* ========================================================
+           VIEW H: HALAMAN PETA PETUALANGAN (MAP)
+           ======================================================== */
+        function renderMapScreen() {
+            showHeader(true);
+            updateHeaderUI();
+
+            const player = getCurrentPlayer();
+            const app = document.getElementById('appContainer');
+
+            const levelsInfo = [
+                { id: 1, name: 'LEVEL 1 — KENALI TOKOH', desc: 'Cocokna gambar tokoh lan jenenge', icon: '🏹' },
+                { id: 2, name: 'LEVEL 2 — TEBAK SIFAT', desc: 'Tebak watak lan karakter tokoh', icon: '🧠' },
+                { id: 3, name: 'LEVEL 3 — PASANGKAN', desc: 'Pasangake watak karo tokoh wayang', icon: '🧩' },
+                { id: 4, name: 'LEVEL 4 — BOSS BATTLE', desc: 'Tantangan Pamungkas Kerajaan Jawa', icon: '⚔️' }
+            ];
+
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-6 md:p-8 w-full max-w-2xl border-amber-500/40 text-center">
+                    <div class="mb-6">
+                        <span class="text-xs uppercase tracking-widest text-amber-400 font-semibold">PETA PERJALANAN</span>
+                        <h2 class="font-heading text-2xl md:text-3xl font-extrabold text-amber-300 mt-1">
+                            ${player.name}, MIWITI PETUALANGAN!
+                        </h2>
+                        <p class="text-xs text-slate-300">Pilih level sing wis terbuka kanggo miwiti misi.</p>
+                    </div>
+
+                    <!-- Path Map -->
+                    <div class="space-y-4 relative py-2">
+                        ${levelsInfo.map((lvl) => {
+                            const isUnlocked = player.unlockedLevel >= lvl.id;
+                            return `
+                                <div class="relative z-10 flex items-center">
+                                    <button onclick="${isUnlocked ? `playSound('click'); startLevel(${lvl.id});` : `playSound('wrong');`}" 
+                                        class="w-full p-4 rounded-2xl border-2 flex items-center justify-between transition-all duration-200 ${isUnlocked ? 'bg-gradient-to-r from-purple-900/80 to-slate-900/80 border-amber-400 hover:scale-[1.02] shadow-lg cursor-pointer btn-game' : 'bg-slate-900/40 border-slate-700 opacity-60 cursor-not-allowed'}">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-12 h-12 rounded-xl ${isUnlocked ? 'bg-amber-500/20 border border-amber-400 text-amber-300' : 'bg-slate-800 border border-slate-700 text-slate-500'} flex items-center justify-center text-2xl font-heading">
+                                                ${lvl.icon}
+                                            </div>
+                                            <div class="text-left">
+                                                <h3 class="font-heading font-bold text-base md:text-lg ${isUnlocked ? 'text-amber-300' : 'text-slate-400'}">${lvl.name}</h3>
+                                                <p class="text-xs text-slate-300">${lvl.desc}</p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            ${isUnlocked ? '<span class="px-3 py-1 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold rounded-full">TERBUKA</span>' : '<span class="text-2xl">🔒</span>'}
+                                        </div>
+                                    </button>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-amber-500/20 flex justify-between items-center">
+                        <button onclick="playSound('click'); renderRegistrationScreen();" class="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs border border-amber-500/30 btn-game">
+                            ⬅️ GANTI PEMAIN
+                        </button>
+                        <button onclick="playSound('click'); renderHomeScreen();" class="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs border border-amber-500/30 btn-game">
+                            🏠 BERANDA
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startLevel(lvlNum) {
+            if (lvlNum === 1) initLevel1();
+            else if (lvlNum === 2) initLevel2();
+            else if (lvlNum === 3) initLevel3();
+            else if (lvlNum === 4) initBossBattle();
+        }
+
+        /* ========================================================
+           VIEW I: LEVEL 1 — KENALI TOKOH
+           ======================================================== */
+        function initLevel1() {
+            // Generate 10 randomized questions from character list
+            const charKeys = Object.keys(CHARACTERS);
+            gameState.level1Questions = [];
+            for (let i = 0; i < 10; i++) {
+                const targetKey = charKeys[Math.floor(Math.random() * charKeys.length)];
+                const targetChar = CHARACTERS[targetKey];
+                
+                // Get 3 wrong distractors
+                const wrongKeys = charKeys.filter(k => k !== targetKey);
+                const shuffledWrong = wrongKeys.sort(() => 0.5 - Math.random()).slice(0, 3);
+                const options = [targetChar, ...shuffledWrong.map(k => CHARACTERS[k])].sort(() => 0.5 - Math.random());
+
+                gameState.level1Questions.push({
+                    target: targetChar,
+                    options: options
+                });
+            }
+
+            gameState.level1Index = 0;
+            renderLevel1Question();
+        }
+
+        function renderLevel1Question() {
+            showHeader(true);
+            updateHeaderUI();
+
+            const player = getCurrentPlayer();
+            if (player.lives <= 0) {
+                renderGameOverScreen(1);
+                return;
+            }
+
+            if (gameState.level1Index >= gameState.level1Questions.length) {
+                // Level 1 Complete!
+                playSound('levelup');
+                if (player.unlockedLevel < 2) player.unlockedLevel = 2;
+                renderLevelCompleteScreen(1, "🎉 LEVEL 1 RAMPUNG!", "Kowe wis bisa ngenali paraga Pandhawa lan Punakawan kanthi cetha.", 2);
+                return;
+            }
+
+            const currentQ = gameState.level1Questions[gameState.level1Index];
+            const app = document.getElementById('appContainer');
+
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-6 md:p-8 w-full max-w-2xl border-amber-500/40 text-center">
+                    <div class="flex justify-between items-center mb-4 border-b border-amber-500/20 pb-3">
+                        <div class="text-left">
+                            <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">🏹 LEVEL 1 — KENALI TOKOH</span>
+                            <h2 class="font-heading text-lg md:text-xl font-bold text-slate-100">Sapa jeneng paraga iki?</h2>
+                        </div>
+                        <div class="px-3 py-1 bg-amber-500/20 border border-amber-400/40 rounded-full text-amber-300 font-heading font-bold text-xs">
+                            Soal ${gameState.level1Index + 1} / 10
+                        </div>
+                    </div>
+
+                    <!-- Character Image -->
+                    <div class="my-4 flex justify-center">
+                        <div class="w-40 h-40 md:w-48 md:h-48 bg-slate-900/80 rounded-2xl p-2 border-2 border-amber-500/40 flex items-center justify-center shadow-xl">
+                            ${getWayangSVG(currentQ.target.id, '100%', '100%')}
+                        </div>
+                    </div>
+
+                    <!-- 4 Multiple Choice Options -->
+                    <div class="grid grid-cols-2 gap-3 md:gap-4 mt-6">
+                        ${currentQ.options.map((opt) => `
+                            <button onclick="checkLevel1Answer('${opt.id}')" class="p-4 bg-slate-900/80 hover:bg-amber-600/30 border border-amber-500/30 hover:border-amber-400 rounded-xl font-heading font-bold text-slate-100 hover:text-amber-300 text-base md:text-lg transition-all btn-game">
+                                ${opt.name}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkLevel1Answer(selectedId) {
+            const currentQ = gameState.level1Questions[gameState.level1Index];
+            const player = getCurrentPlayer();
+
+            if (selectedId === currentQ.target.id) {
+                player.score += 10;
+                showFeedbackModal(true, "✅ BENER!", `Pancen bener! Paraga iki yaiku ${currentQ.target.name}. (+10 Poin)`, () => {
+                    gameState.level1Index++;
+                    renderLevel1Question();
+                });
+            } else {
+                player.lives -= 1;
+                showFeedbackModal(false, "❌ DURUNG BENER!", `Jawaban sing bener yaiku ${currentQ.target.name}. (-1 Nyawa)`, () => {
+                    gameState.level1Index++;
+                    renderLevel1Question();
+                });
+            }
+        }
+    </script>
+
+    <script>
+        /* ========================================================
+           VIEW J: LEVEL 2 — TEBAK SIFAT
+           ======================================================== */
+        function initLevel2() {
+            // Shuffle questions bank
+            gameState.level2Questions = [...LEVEL2_QUESTIONS_BANK].sort(() => 0.5 - Math.random());
+            gameState.level2Index = 0;
+            renderLevel2Question();
+        }
+
+        function renderLevel2Question() {
+            showHeader(true);
+            updateHeaderUI();
+
+            const player = getCurrentPlayer();
+            if (player.lives <= 0) {
+                renderGameOverScreen(2);
+                return;
+            }
+
+            if (gameState.level2Index >= gameState.level2Questions.length) {
+                playSound('levelup');
+                if (player.unlockedLevel < 3) player.unlockedLevel = 3;
+                renderLevelCompleteScreen(2, "🎉 LEVEL 2 RAMPUNG!", "Kowe wis luwih ngerti watak para paraga wayang Jawa.", 3);
+                return;
+            }
+
+            const currentQ = gameState.level2Questions[gameState.level2Index];
+            const app = document.getElementById('appContainer');
+
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-6 md:p-8 w-full max-w-2xl border-amber-500/40 text-center">
+                    <div class="flex justify-between items-center mb-4 border-b border-amber-500/20 pb-3">
+                        <div class="text-left">
+                            <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">🧠 LEVEL 2 — TEBAK SIFAT</span>
+                            <h2 class="font-heading text-lg md:text-xl font-bold text-slate-100">Kenali watak para paraga!</h2>
+                        </div>
+                        <div class="px-3 py-1 bg-amber-500/20 border border-amber-400/40 rounded-full text-amber-300 font-heading font-bold text-xs">
+                            Soal ${gameState.level2Index + 1} / 10
+                        </div>
+                    </div>
+
+                    <!-- Question Prompt Box -->
+                    <div class="my-6 p-6 bg-slate-900/90 rounded-2xl border-2 border-amber-500/30 text-slate-100">
+                        <p class="text-lg md:text-xl font-semibold leading-relaxed">
+                            "${currentQ.question}"
+                        </p>
+                    </div>
+
+                    <!-- 4 Multiple Choice Options -->
+                    <div class="grid grid-cols-2 gap-3 md:gap-4">
+                        ${currentQ.options.map((optId) => {
+                            const char = CHARACTERS[optId];
+                            return `
+                                <button onclick="checkLevel2Answer('${optId}')" class="p-4 bg-slate-900/80 hover:bg-amber-600/30 border border-amber-500/30 hover:border-amber-400 rounded-xl font-heading font-bold text-slate-100 hover:text-amber-300 text-base md:text-lg transition-all btn-game flex items-center justify-center space-x-2">
+                                    <span>${char.name}</span>
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkLevel2Answer(selectedId) {
+            const currentQ = gameState.level2Questions[gameState.level2Index];
+            const player = getCurrentPlayer();
+            const targetChar = CHARACTERS[currentQ.correct];
+
+            if (selectedId === currentQ.correct) {
+                player.score += 10;
+                showFeedbackModal(true, "✅ PANCEN BENER!", `Bener banget! ${targetChar.name} iku ${targetChar.desc} (+10 Poin)`, () => {
+                    gameState.level2Index++;
+                    renderLevel2Question();
+                });
+            } else {
+                player.lives -= 1;
+                showFeedbackModal(false, "❌ DURUNG TREP!", `Jawaban sing bener yaiku ${targetChar.name}. (-1 Nyawa)`, () => {
+                    gameState.level2Index++;
+                    renderLevel2Question();
+                });
+            }
+        }
+
+        /* ========================================================
+           VIEW K: LEVEL 3 — PASANGKAN (MATCHING)
+           ======================================================== */
+        function initLevel3() {
+            // Select 5 distinct characters for matching
+            const keys = ['yudhistira', 'bima', 'arjuna', 'semar', 'gareng'];
+            const chars = keys.map(k => CHARACTERS[k]);
+            
+            // Left column characters, Right column traits shuffled
+            const traits = chars.map(c => ({
+                id: c.id,
+                traitText: c.traits.join(', ')
+            })).sort(() => 0.5 - Math.random());
+
+            gameState.level3Pairs = {
+                characters: chars,
+                traits: traits,
+                matched: {}
+            };
+            gameState.level3SelectedChar = null;
+            gameState.level3MatchedCount = 0;
+
+            renderLevel3Screen();
+        }
+
+        function renderLevel3Screen() {
+            showHeader(true);
+            updateHeaderUI();
+
+            const player = getCurrentPlayer();
+            if (player.lives <= 0) {
+                renderGameOverScreen(3);
+                return;
+            }
+
+            if (gameState.level3MatchedCount >= 5) {
+                playSound('levelup');
+                if (player.unlockedLevel < 4) player.unlockedLevel = 4;
+                renderLevelCompleteScreen(3, "🎉 LEVEL 3 RAMPUNG!", "Kowe wis pinter masangake watak karo paraga wayang.", 4);
+                return;
+            }
+
+            const app = document.getElementById('appContainer');
+            const data = gameState.level3Pairs;
+
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-6 md:p-8 w-full max-w-4xl border-amber-500/40 text-center">
+                    <div class="mb-4 border-b border-amber-500/20 pb-3">
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">🧩 LEVEL 3 — PASANGKAN</span>
+                        <h2 class="font-heading text-lg md:text-xl font-bold text-slate-100">Pasangna watak karo paraga sing trep!</h2>
+                        <p class="text-xs text-amber-200/70">Klik paraga ing sisih kiwa, banjur klik watak sing cocog ing sisih tengen.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 text-left">
+                        <!-- Left Column: Characters -->
+                        <div class="space-y-3">
+                            <h3 class="font-heading text-amber-300 font-bold text-sm uppercase">1. Paraga Wayang:</h3>
+                            ${data.characters.map(c => {
+                                const isMatched = data.matched[c.id];
+                                const isSelected = gameState.level3SelectedChar === c.id;
+
+                                return `
+                                    <button onclick="${!isMatched ? `selectLevel3Char('${c.id}')` : ''}" 
+                                        class="w-full p-3 rounded-2xl border-2 flex items-center justify-between transition-all ${isMatched ? 'bg-emerald-950/60 border-emerald-500/50 opacity-60 cursor-default' : isSelected ? 'bg-amber-500/30 border-amber-400 shadow-lg scale-102' : 'bg-slate-900/80 border-slate-700 hover:border-amber-500/50 btn-game'}">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-slate-800 rounded-xl p-1 flex-shrink-0">
+                                                ${getWayangSVG(c.id, '100%', '100%')}
+                                            </div>
+                                            <div>
+                                                <h4 class="font-heading font-bold text-amber-200 text-base">${c.name}</h4>
+                                                <p class="text-[11px] text-slate-300">${c.group}</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            ${isMatched ? '<span class="text-emerald-400 font-bold text-xl">✅</span>' : isSelected ? '<span class="text-amber-400 text-xs font-bold">DIPILIH</span>' : '<span class="text-slate-500 text-xs">➡️</span>'}
+                                        </div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <!-- Right Column: Traits -->
+                        <div class="space-y-3">
+                            <h3 class="font-heading text-amber-300 font-bold text-sm uppercase">2. Watak / Sifat:</h3>
+                            ${data.traits.map(t => {
+                                const isMatched = Object.values(data.matched).includes(t.id);
+
+                                return `
+                                    <button onclick="${!isMatched ? `matchLevel3Trait('${t.id}')` : ''}" 
+                                        class="w-full p-4 rounded-2xl border-2 transition-all ${isMatched ? 'bg-emerald-950/60 border-emerald-500/50 opacity-60 cursor-default' : 'bg-slate-900/80 border-slate-700 hover:border-amber-400 btn-game'}">
+                                        <div class="flex items-center justify-between">
+                                            <span class="font-semibold text-slate-100 text-sm md:text-base capitalize">${t.traitText}</span>
+                                            ${isMatched ? '<span class="text-emerald-400 font-bold text-xl">✅</span>' : '<span class="text-slate-500 text-xs">🎯</span>'}
+                                        </div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectLevel3Char(charId) {
+            playSound('click');
+            gameState.level3SelectedChar = charId;
+            renderLevel3Screen();
+        }
+
+        function matchLevel3Trait(traitCharId) {
+            if (!gameState.level3SelectedChar) {
+                playSound('wrong');
+                showFeedbackModal(false, "⚠️ PILIH PARAGA DHISEK!", "Klik salah siji paraga ing sisih kiwa dhisik!", () => {});
+                return;
+            }
+
+            const player = getCurrentPlayer();
+            const charId = gameState.level3SelectedChar;
+
+            if (charId === traitCharId) {
+                // Correct Match
+                player.score += 10;
+                gameState.level3Pairs.matched[charId] = traitCharId;
+                gameState.level3MatchedCount++;
+                gameState.level3SelectedChar = null;
+
+                showFeedbackModal(true, "✅ PASANGAN BENER!", `Pancen trep! (+10 Poin)`, () => {
+                    renderLevel3Screen();
+                });
+            } else {
+                // Wrong Match
+                player.lives -= 1;
+                showFeedbackModal(false, "❌ DURUNG TREP!", `Watak iki ora cocog karo paraga sing dipilih. (-1 Nyawa)`, () => {
+                    renderLevel3Screen();
+                });
+            }
+        }
+    </script>
+
+    <script>
+        /* ========================================================
+           VIEW L: LEVEL 4 — BOSS BATTLE
+           ======================================================== */
+        function initBossBattle() {
+            gameState.bossIndex = 0;
+            renderBossQuestion();
+        }
+
+        function renderBossQuestion() {
+            showHeader(true);
+            updateHeaderUI();
+
+            const player = getCurrentPlayer();
+            if (player.lives <= 0) {
+                renderGameOverScreen(4);
+                return;
+            }
+
+            if (gameState.bossIndex >= BOSS_QUESTIONS_BANK.length) {
+                // Completed Boss Battle!
+                playSound('victory');
+                triggerConfetti();
+                renderFinalResultsScreen();
+                return;
+            }
+
+            const currentQ = BOSS_QUESTIONS_BANK[gameState.bossIndex];
+            const app = document.getElementById('appContainer');
+
+            app.innerHTML = `
+                <div class="glass-card glass-card-gold rounded-3xl p-6 md:p-8 w-full max-w-3xl border-2 border-amber-400 text-center relative overflow-hidden">
+                    <!-- Boss Arena Decoration -->
+                    <div class="flex justify-between items-center mb-4 border-b border-amber-500/30 pb-3">
+                        <div class="text-left flex items-center space-x-3">
+                            <span class="text-3xl animate-bounce">⚔️</span>
+                            <div>
+                                <h2 class="font-heading text-xl md:text-2xl font-extrabold text-amber-300">BOSS BATTLE: TANTANGAN PAMUNGKAS</h2>
+                                <p class="text-xs text-amber-100/80">Kerajaan Jawa Wayang Challenge (+20 Poin / Soal)</p>
+                            </div>
+                        </div>
+                        <div class="px-4 py-1.5 bg-amber-500/30 border border-amber-300 rounded-full font-heading font-bold text-amber-200 text-xs md:text-sm">
+                            PERTANYAAN ${gameState.bossIndex + 1} / 5
+                        </div>
+                    </div>
+
+                    <!-- Question Container -->
+                    <div class="my-6 p-6 bg-slate-950/90 rounded-2xl border-2 border-amber-400 text-slate-100 shadow-2xl">
+                        <p class="text-lg md:text-xl font-bold leading-relaxed text-amber-200">
+                            "${currentQ.question}"
+                        </p>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="grid grid-cols-1 gap-3 text-left">
+                        ${currentQ.options.map((optText, idx) => `
+                            <button onclick="checkBossAnswer(${idx})" class="p-4 bg-slate-900/90 hover:bg-amber-600/30 border border-amber-500/40 hover:border-amber-300 rounded-xl font-semibold text-slate-100 hover:text-amber-300 text-sm md:text-base transition-all btn-game flex items-center space-x-3">
+                                <span class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center font-heading text-amber-300 text-xs flex-shrink-0">${String.fromCharCode(65 + idx)}</span>
+                                <span>${optText}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkBossAnswer(selectedIdx) {
+            const currentQ = BOSS_QUESTIONS_BANK[gameState.bossIndex];
+            const player = getCurrentPlayer();
+
+            if (selectedIdx === currentQ.correctIndex) {
+                player.score += 20;
+                showFeedbackModal(true, "⚔️ JAWABAN BENER!", `Luar biasa! Wangsulanmu bener banget. (+20 Poin)`, () => {
+                    gameState.bossIndex++;
+                    renderBossQuestion();
+                });
+            } else {
+                player.lives -= 1;
+                showFeedbackModal(false, "❌ DURUNG BENER!", `Wangsulan durung trep. Tetep semangat! (-1 Nyawa)`, () => {
+                    gameState.bossIndex++;
+                    renderBossQuestion();
+                });
+            }
+        }
+
+        /* Level Completion Transition Screen */
+        function renderLevelCompleteScreen(completedLevel, title, subtitle, nextLevel) {
+            showHeader(true);
+            updateHeaderUI();
+
+            const app = document.getElementById('appContainer');
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-8 w-full max-w-lg text-center border-amber-500/40 animate-star">
+                    <span class="text-6xl mb-3 block">🎉</span>
+                    <h2 class="font-heading text-3xl font-extrabold text-amber-400 mb-2">${title}</h2>
+                    <p class="text-slate-200 text-sm mb-6">${subtitle}</p>
+
+                    <div class="p-4 bg-slate-900/80 rounded-2xl border border-amber-500/30 mb-6 flex justify-around">
+                        <div>
+                            <span class="text-xs text-slate-400 block">Skor Saiki:</span>
+                            <span class="font-heading font-bold text-2xl text-amber-300">⭐ ${getCurrentPlayer().score}</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 block">Sisa Nyawa:</span>
+                            <span class="font-heading font-bold text-2xl text-red-400">❤️ ${getCurrentPlayer().lives}</span>
+                        </div>
+                    </div>
+
+                    <button onclick="playSound('click'); startLevel(${nextLevel});" class="w-full py-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold font-heading text-lg rounded-xl shadow-lg btn-game">
+                        ${nextLevel === 4 ? '⚔️ MENUJU BOSS BATTLE' : `➡️ LANJUT LEVEL ${nextLevel}`}
+                    </button>
+                </div>
+            `;
+        }
+
+        /* Game Over Screen */
+        function renderGameOverScreen(failedLevel) {
+            showHeader(true);
+            updateHeaderUI();
+
+            const app = document.getElementById('appContainer');
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-8 w-full max-w-lg text-center border-red-500/40">
+                    <span class="text-6xl mb-3 block animate-bounce">💔</span>
+                    <h2 class="font-heading text-3xl font-extrabold text-red-400 mb-2">NYAWA WIS ENTEK!</h2>
+                    <p class="text-slate-300 text-sm mb-6">Aja putus asa, coba maneh kanggo ngrampungake misi iki!</p>
+
+                    <div class="flex justify-center space-x-3">
+                        <button onclick="playSound('click'); getCurrentPlayer().lives = 5; startLevel(${failedLevel});" class="py-3 px-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold font-heading rounded-xl btn-game">
+                            🔄 BALENI LEVEL ${failedLevel}
+                        </button>
+                        <button onclick="playSound('click'); renderHomeScreen();" class="py-3 px-6 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl border border-amber-500/30 btn-game">
+                            🏠 BERANDA
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+
+    <script>
+        /* ==========================================================
+           VIEW M & N: HASIL AKHIR & MODE DUEL
+           ========================================================== */
+        function renderFinalResultsScreen() {
+            showHeader(true);
+            updateHeaderUI();
+
+            const player1 = gameState.players[1];
+            const player2 = gameState.players[2];
+
+            // Save score to local storage
+            saveScoreToLeaderboard(getCurrentPlayer());
+
+            const app = document.getElementById('appContainer');
+
+            if (gameState.mode === 'DUEL' && gameState.currentPlayerIndex === 1) {
+                // Player 1 finished, turn for Player 2!
+                app.innerHTML = `
+                    <div class="glass-card rounded-3xl p-8 w-full max-w-lg text-center border-amber-500/40 animate-star">
+                        <span class="text-6xl mb-3 block">🏁</span>
+                        <h2 class="font-heading text-3xl font-extrabold text-amber-400 mb-2">${player1.name} RAMPUNG!</h2>
+                        <p class="text-slate-200 text-sm mb-4">Skor ${player1.name}: <b class="text-amber-300">${player1.score} Poin</b></p>
+                        
+                        <div class="my-6 p-4 bg-purple-950/60 rounded-2xl border border-purple-500/40">
+                            <p class="font-heading text-xl text-amber-300 font-bold">⚔️ GILIRAN ${player2.name.toUpperCase()}!</p>
+                            <p class="text-xs text-slate-300 mt-1">Siapna dirimu kanggo miwiti petualangan wayang!</p>
+                        </div>
+
+                        <button onclick="playSound('click'); gameState.currentPlayerIndex = 2; renderMapScreen();" class="w-full py-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold font-heading text-lg rounded-xl btn-game">
+                            MULAI GILIRAN ${player2.name.toUpperCase()} 🏹
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // SOLO or DUEL Completed (Both players)
+            if (gameState.mode === 'DUEL') {
+                saveScoreToLeaderboard(player2);
+                let winnerText = "";
+                if (player1.score > player2.score) winnerText = `🏆 PEMENANG: ${player1.name.toUpperCase()}`;
+                else if (player2.score > player1.score) winnerText = `🏆 PEMENANG: ${player2.name.toUpperCase()}`;
+                else winnerText = "🤝 HASIL IMBANG!";
+
+                app.innerHTML = `
+                    <div class="glass-card glass-card-gold rounded-3xl p-8 w-full max-w-xl text-center border-amber-400 animate-star">
+                        <span class="text-6xl mb-3 block">⚔️</span>
+                        <h2 class="font-heading text-3xl font-extrabold text-amber-300 mb-1">HASIL DUEL</h2>
+                        <p class="text-xs text-slate-200 mb-6">Pertandhingan Petualang Wayang Jawa</p>
+
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="p-4 bg-slate-900/90 rounded-2xl border ${player1.score >= player2.score ? 'border-amber-400' : 'border-slate-700'}">
+                                <h3 class="font-heading font-bold text-amber-300 text-lg">${player1.name}</h3>
+                                <p class="text-3xl font-extrabold font-heading text-amber-400 mt-2">⭐ ${player1.score}</p>
+                                <span class="text-xs text-slate-400">Sisa Nyawa: ❤️ ${player1.lives}</span>
+                            </div>
+                            <div class="p-4 bg-slate-900/90 rounded-2xl border ${player2.score >= player1.score ? 'border-amber-400' : 'border-slate-700'}">
+                                <h3 class="font-heading font-bold text-amber-300 text-lg">${player2.name}</h3>
+                                <p class="text-3xl font-extrabold font-heading text-amber-400 mt-2">⭐ ${player2.score}</p>
+                                <span class="text-xs text-slate-400">Sisa Nyawa: ❤️ ${player2.lives}</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-amber-500/20 border border-amber-400/50 rounded-2xl mb-6">
+                            <h3 class="font-heading font-extrabold text-2xl text-amber-300">${winnerText}</h3>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <button onclick="playSound('click'); renderLeaderboardScreen();" class="p-3 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs border border-amber-500/30 btn-game">
+                                🏆 PAPAN SKOR
+                            </button>
+                            <button onclick="playSound('click'); renderRegistrationScreen();" class="p-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold font-heading rounded-xl text-xs btn-game">
+                                🔄 MAIN MANEH
+                            </button>
+                            <button onclick="playSound('click'); renderHomeScreen();" class="p-3 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs border border-amber-500/30 btn-game">
+                                🏠 BERANDA
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // SOLO Victory
+                const p = player1;
+                const badgeTitle = p.unlockedLevel >= 4 ? "🏆 PANGERTEN WAYANG JAWA" : "⭐ PETUALANG WAYANG";
+
+                app.innerHTML = `
+                    <div class="glass-card glass-card-gold rounded-3xl p-8 w-full max-w-lg text-center border-amber-400 animate-star">
+                        <span class="text-6xl mb-3 block">🎉</span>
+                        <h2 class="font-heading text-3xl font-extrabold text-amber-300 mb-1">SELAMAT, ${p.name.toUpperCase()}!</h2>
+                        <p class="text-amber-200 text-sm font-bold mb-4">${badgeTitle}</p>
+                        <p class="text-slate-200 text-xs mb-6">Kowe wis kasil ngrampungake kabeh misi petualangan wayang Jawa!</p>
+
+                        <div class="p-4 bg-slate-950/80 rounded-2xl border border-amber-500/30 space-y-2 mb-6">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-400">Mode Permainan:</span>
+                                <span class="font-bold text-amber-300">SOLO</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-400">Skor Akhir:</span>
+                                <span class="font-bold text-amber-300 text-lg">⭐ ${p.score}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-400">Sisa Nyawa:</span>
+                                <span class="font-bold text-red-400">❤️ ${p.lives}</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <button onclick="playSound('click'); renderLeaderboardScreen();" class="p-3 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs border border-amber-500/30 btn-game">
+                                🏆 PAPAN SKOR
+                            </button>
+                            <button onclick="playSound('click'); renderRegistrationScreen();" class="p-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold font-heading rounded-xl text-xs btn-game">
+                                🔄 MAIN MANEH
+                            </button>
+                            <button onclick="playSound('click'); renderHomeScreen();" class="p-3 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl text-xs border border-amber-500/30 btn-game">
+                                🏠 BERANDA
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        /* ========================================================
+           VIEW O: PAPAN SKOR (LEADERBOARD)
+           ======================================================== */
+        function getLeaderboard() {
+            try {
+                const data = localStorage.getItem('arjuna_wayang_scores');
+                return data ? JSON.parse(data) : [];
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function saveScoreToLeaderboard(player) {
+            if (!player || !player.name) return;
+            let board = getLeaderboard();
+            
+            const badgeTitle = player.unlockedLevel >= 4 ? "Pangerten Wayang Jawa" : "Petualang Wayang";
+            
+            board.push({
+                name: player.name,
+                mode: gameState.mode,
+                score: player.score,
+                badge: badgeTitle,
+                date: new Date().toLocaleDateString('id-ID')
+            });
+
+            // Sort by highest score
+            board.sort((a, b) => b.score - a.score);
+            // Keep top 15 entries
+            board = board.slice(0, 15);
+
+            try {
+                localStorage.setItem('arjuna_wayang_scores', JSON.stringify(board));
+            } catch(e) {}
+        }
+
+        function renderLeaderboardScreen() {
+            showHeader(false);
+            const board = getLeaderboard();
+            const app = document.getElementById('appContainer');
+
+            app.innerHTML = `
+                <div class="glass-card rounded-3xl p-6 md:p-8 w-full max-w-3xl border-amber-500/40">
+                    <div class="flex items-center justify-between mb-6 border-b border-amber-500/30 pb-4">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-3xl">🏆</span>
+                            <div>
+                                <h2 class="font-heading text-2xl md:text-3xl font-bold text-amber-400">PAPAN SKOR</h2>
+                                <p class="text-xs text-amber-200/70">Para Petualang Wayang Jawa Terbaik</p>
+                            </div>
+                        </div>
+                        <button onclick="playSound('click'); renderHomeScreen();" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl text-xs border border-amber-500/30 btn-game">
+                            🏠 BERANDA
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto mb-6">
+                        <table class="w-full text-left text-xs md:text-sm">
+                            <thead>
+                                <tr class="bg-amber-500/20 text-amber-300 font-heading border-b border-amber-500/30">
+                                    <th class="p-3">Peringkat</th>
+                                    <th class="p-3">Nama Pemain</th>
+                                    <th class="p-3">Mode</th>
+                                    <th class="p-3">Skor</th>
+                                    <th class="p-3">Gelar</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800 text-slate-200">
+                                ${board.length > 0 ? board.map((item, index) => {
+                                    let rankBadge = `${index + 1}`;
+                                    if (index === 0) rankBadge = '🥇 Juara 1';
+                                    else if (index === 1) rankBadge = '🥈 Juara 2';
+                                    else if (index === 2) rankBadge = '🥉 Juara 3';
+
+                                    return `
+                                        <tr class="hover:bg-slate-900/50">
+                                            <td class="p-3 font-bold ${index < 3 ? 'text-amber-300 font-heading' : ''}">${rankBadge}</td>
+                                            <td class="p-3 font-semibold">${item.name}</td>
+                                            <td class="p-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold text-amber-400">${item.mode}</span></td>
+                                            <td class="p-3 font-heading font-bold text-amber-300">⭐ ${item.score}</td>
+                                            <td class="p-3 text-xs text-amber-200/80">${item.badge === 'Pangerten Wayang Jawa' ? '🏆 ' : '⭐ '}${item.badge}</td>
+                                        </tr>
+                                    `;
+                                }).join('') : `
+                                    <tr>
+                                        <td colspan="5" class="p-6 text-center text-slate-400">
+                                            Durung ana data papan skor. Ayo dadi petualang pisanan!
+                                        </td>
+                                    </tr>
+                                `}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <button onclick="playSound('click'); renderHomeScreen();" class="py-3 px-6 bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold rounded-xl border border-amber-500/30 btn-game">
+                            🏠 KEMBALI KE BERANDA
+                        </button>
+                        <button onclick="playSound('click'); renderRegistrationScreen();" class="py-3 px-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold font-heading rounded-xl btn-game">
+                            🔄 MAIN LAGI
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
